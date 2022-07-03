@@ -82,3 +82,4 @@ int main()
 
     return 0;
 }
+///https://pages.cs.wisc.edu/~psilord/blog/data/chess-pages/nonsliding.html
