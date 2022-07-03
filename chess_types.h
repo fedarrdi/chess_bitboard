@@ -5,7 +5,7 @@
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
 
-typedef unsigned long long U64;
+typedef unsigned long long Bitboard;
 
 enum
 {
@@ -21,14 +21,19 @@ enum
 
 enum color {black, white, both};
 enum piece {w_pawn, w_knight, w_bishop, w_rook, w_queen, w_king, b_pawn, b_knight, b_bishop, b_rook, b_queen, b_king};
+enum file {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
+enum rank {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8};
 
-struct bit_chess_board
+typedef struct bit_chess_board
 {
-    U64 occupied[3];///by white by black by both
+    Bitboard occupied[3];///by white by black by both
     /// index w_pawn, w_knight, w_bishop, w_queen, w_rook, w_king, b_pawn, b_knight, b_bishop, b_queen, b_rook, b_king
-    U64 pieces[12];///every piece bitboard
-};
+    Bitboard pieces[12];///every piece bitboard
+} ChessBoard;
 
-
+typedef struct bit_lookup_table
+{
+    Bitboard ClearRank[8], MaskRank[8], ClearFile[8], MaskFile[8];
+}LookupTable;
 
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

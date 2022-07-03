@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "chess_types.h"
 
-void print_bitboard(U64 bitboard)
+void print_bitboard(Bitboard bitboard)
 {
     for(int rank = 0; rank < 8; rank++)
     {
@@ -20,9 +20,9 @@ void print_bitboard(U64 bitboard)
     printf("Bitboard : %llu\n\n", bitboard);
 }
 
-struct bit_chess_board fill_chess_board()
+ChessBoard fill_chess_board()
 {
-    struct bit_chess_board chess_board;
+    ChessBoard chess_board;
     for(int i = 0;i < 3;chess_board.occupied[i++] = 0);
     for(int i = 0;i < 12;chess_board.pieces[i++] = 0);
 
@@ -67,19 +67,47 @@ struct bit_chess_board fill_chess_board()
     return chess_board;
 }
 
+LookupTable fill_lookup_table()
+{
+    LookupTable tbls;
+    for(int i = 0;i < 8;i++)
+    {
+        tbls.ClearRank[i] = tbls.ClearFile[i] = (Bitboard)~0;
+        tbls.MaskRank[i] = tbls.MaskFile[i] = 0;
+    }
+
+    Bitboard tmp1 = 1, tmp2;
+    for(int i = 0;i < 8;i++)
+    {
+        tmp2 = 1 << i;
+        for(int j = 0;j < 8;j++)
+        {
+            tbls.ClearRank[i] ^= tmp1;
+            tmp1 <<= 1;
+            tbls.ClearFile[i] ^= tmp2;
+            tmp2 <<= 8;
+        }
+    }
+
+    for(int i = 0;i < 8;i++)
+    {
+        tbls.MaskRank[i] = ~tbls.ClearRank[i];
+        tbls.MaskFile[i] = ~tbls.ClearFile[i];
+    }
+
+    return tbls;
+}
+
+Bitboard king_move(Bitboard king_pos, Bitboard allay_piece, LookupTable *tbls);
 
 int main()
 {
-    struct bit_chess_board chess_board = fill_chess_board();
+    Bitboard king_pos = (Bitboard)0, white_piece = (Bitboard)0;
+    SET_BIT(king_pos, a5);
 
-    for(int i = 0;i < 12;i++)
-        print_bitboard(chess_board.pieces[i]);
-
-    printf("\n\n\n");
-
-    for(int i = 0;i < 3;i++)
-        print_bitboard(chess_board.occupied[i]);
+    LookupTable tbls = fill_lookup_table();
+    Bitboard kingmoveboard = king_move(king_pos, white_piece, &tbls);
+    print_bitboard(kingmoveboard);
 
     return 0;
 }
-///https://pages.cs.wisc.edu/~psilord/blog/data/chess-pages/nonsliding.html
