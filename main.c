@@ -98,18 +98,18 @@ LookupTable fill_lookup_table()
     return tbls;
 }
 
-Bitboard king_move(Bitboard king_pos, Bitboard own_side, LookupTable *tbls);
+Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, LookupTable *tbls);
+
 
 int main()
 {
-    Bitboard king_pos = (Bitboard)0, white_piece = (Bitboard)0;
-    SET_BIT(king_pos, a8);
-    SET_BIT(white_piece, b8);
-    SET_BIT(white_piece, a7);
+    Bitboard knight_board = 0;
+    SET_BIT(knight_board, a4);
 
+    Bitboard own_side = 0;
     LookupTable tbls = fill_lookup_table();
-    Bitboard kingmoveboard = king_move(king_pos, white_piece, &tbls);
-    print_bitboard(kingmoveboard);
 
+    Bitboard out = knight_move(knight_board, own_side, &tbls);
+    print_bitboard(out);
     return 0;
 }
