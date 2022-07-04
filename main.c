@@ -98,12 +98,14 @@ LookupTable fill_lookup_table()
     return tbls;
 }
 
-Bitboard king_move(Bitboard king_pos, Bitboard allay_piece, LookupTable *tbls);
+Bitboard king_move(Bitboard king_pos, Bitboard own_side, LookupTable *tbls);
 
 int main()
 {
     Bitboard king_pos = (Bitboard)0, white_piece = (Bitboard)0;
-    SET_BIT(king_pos, a5);
+    SET_BIT(king_pos, a8);
+    SET_BIT(white_piece, b8);
+    SET_BIT(white_piece, a7);
 
     LookupTable tbls = fill_lookup_table();
     Bitboard kingmoveboard = king_move(king_pos, white_piece, &tbls);
