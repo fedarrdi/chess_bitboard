@@ -35,8 +35,8 @@ Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
     Bitboard all_pieces = own_side | enemy_side;
     Bitboard white_pawn_one_step  = (pawn_pos >> 8) & ~all_pieces,
             white_pawn_two_step  = ((white_pawn_one_step & tbls->MaskRank[RANK_3]) >> 8) & ~all_pieces,
-            white_pawn_left_attack = (pawn_pos >> 9) & enemy_side,
-            white_pawn_right_attack = (pawn_pos >> 7) & enemy_side,
+            white_pawn_left_attack = (pawn_pos >> 9) & tbls->ClearFile[FILE_H] & enemy_side,
+            white_pawn_right_attack = (pawn_pos >> 7) & tbls->ClearFile[FILE_A] & enemy_side,
             moves = white_pawn_one_step | white_pawn_two_step | white_pawn_left_attack | white_pawn_right_attack;
 
     return moves;
@@ -45,11 +45,11 @@ Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
     Bitboard all_pieces = own_side | enemy_side;
-    Bitboard white_pawn_one_step  = (pawn_pos << 8) & ~all_pieces,
-            white_pawn_two_step  = ((white_pawn_one_step & tbls->MaskRank[RANK_6]) << 8) & ~all_pieces,
-            white_pawn_left_attack = (pawn_pos << 9) & enemy_side,
-            white_pawn_right_attack = (pawn_pos << 7) & enemy_side,
-            moves = white_pawn_one_step | white_pawn_two_step | white_pawn_left_attack | white_pawn_right_attack;
+    Bitboard black_pawn_one_step  = (pawn_pos << 8) & ~all_pieces,
+            black_pawn_two_step  = ((black_pawn_one_step & tbls->MaskRank[RANK_6]) << 8) & ~all_pieces,
+            black_pawn_left_attack = (pawn_pos << 9) & tbls->ClearFile[FILE_A] & enemy_side,
+            black_pawn_right_attack = (pawn_pos << 7) & tbls->ClearFile[FILE_H] & enemy_side,
+            moves = black_pawn_one_step | black_pawn_two_step | black_pawn_left_attack | black_pawn_right_attack;
 
     return moves;
 }
