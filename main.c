@@ -93,23 +93,26 @@ LookupTable fill_lookup_table()
     {
         tbls.MaskRank[i] = ~tbls.ClearRank[i];
         tbls.MaskFile[i] = ~tbls.ClearFile[i];
+        //printf("Rank %d\n", i);
+       // print_bitboard(tbls.MaskRank[i]);
     }
 
     return tbls;
 }
-
-Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, LookupTable *tbls);
-
+Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
 
 int main()
 {
-    Bitboard knight_board = 0;
-    SET_BIT(knight_board, a4);
+    Bitboard board = 0;
+    SET_BIT(board, e7);
 
-    Bitboard own_side = 0;
+    Bitboard own_side = 0, enemy_side = 0;
     LookupTable tbls = fill_lookup_table();
 
-    Bitboard out = knight_move(knight_board, own_side, &tbls);
-    print_bitboard(out);
+    SET_BIT(enemy_side, d6);
+    SET_BIT(enemy_side, f6);
+
+    Bitboard o = black_pawn_move(board, own_side, enemy_side, &tbls);
+    print_bitboard(o);
     return 0;
 }

@@ -10,9 +10,9 @@ Bitboard king_move(Bitboard king_pos, Bitboard own_side, LookupTable *tbls)
             m6 = ((king_pos << 1) & tbls->ClearFile[FILE_A]),
             m7 = ((king_pos >> 9) & tbls->ClearFile[FILE_H]),
             m8 = ((king_pos << 9) & tbls->ClearFile[FILE_A]),
-            move_board = m1 | m2 | m3 | m4 | m5 | m6 | m7 | m8;
+            moves = m1 | m2 | m3 | m4 | m5 | m6 | m7 | m8;
 
-    return move_board  & ~own_side;
+    return moves  & ~own_side;
 }
 
 Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, LookupTable *tbls)
@@ -25,12 +25,31 @@ Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, LookupTable *tbls)
             m6 = (knight_pos << 10) & tbls->ClearFile[FILE_A] & tbls->ClearFile[FILE_B] ,
             m7 = (knight_pos << 15) & tbls->ClearFile[FILE_H],
             m8 = (knight_pos << 17) & tbls->ClearFile[FILE_A],
-            move_board = m1 | m2 | m3 | m4 | m5 | m6 | m7 | m8;
+            moves = m1 | m2 | m3 | m4 | m5 | m6 | m7 | m8;
 
-    return move_board & ~own_side;
+    return moves & ~own_side;
 }
 
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
-    Bitboard m1 = (pawn_pos >> 8) & ~own_side;
+    Bitboard all_pieces = own_side | enemy_side;
+    Bitboard white_pawn_one_step  = (pawn_pos >> 8) & ~all_pieces,
+            white_pawn_two_step  = ((white_pawn_one_step & tbls->MaskRank[RANK_3]) >> 8) & ~all_pieces,
+            white_pawn_left_attack = (pawn_pos >> 9) & enemy_side,
+            white_pawn_right_attack = (pawn_pos >> 7) & enemy_side,
+            moves = white_pawn_one_step | white_pawn_two_step | white_pawn_left_attack | white_pawn_right_attack;
+
+    return moves;
+}
+
+Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+{
+    Bitboard all_pieces = own_side | enemy_side;
+    Bitboard white_pawn_one_step  = (pawn_pos << 8) & ~all_pieces,
+            white_pawn_two_step  = ((white_pawn_one_step & tbls->MaskRank[RANK_6]) << 8) & ~all_pieces,
+            white_pawn_left_attack = (pawn_pos << 9) & enemy_side,
+            white_pawn_right_attack = (pawn_pos << 7) & enemy_side,
+            moves = white_pawn_one_step | white_pawn_two_step | white_pawn_left_attack | white_pawn_right_attack;
+
+    return moves;
 }
