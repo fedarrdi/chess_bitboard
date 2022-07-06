@@ -1,0 +1,4 @@
+"D:\CLion 2021.3.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=D:/CLion 2021.3.2/bin/ninja/win/ninja.exe" -G Ninja C:\Users\fedar\CLionProject\chess_bit_boards
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/fedar/CLionProject/chess_bit_boards/cmake-build-debug

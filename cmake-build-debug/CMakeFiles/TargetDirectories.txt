@@ -1,0 +1,3 @@
+C:/Users/fedar/CLionProject/chess_bit_boards/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/fedar/CLionProject/chess_bit_boards/cmake-build-debug/CMakeFiles/chess_bit_boards.dir
+C:/Users/fedar/CLionProject/chess_bit_boards/cmake-build-debug/CMakeFiles/edit_cache.dir
