@@ -55,19 +55,55 @@ Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 }
 
 
-Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side)
+Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
     return 0;
 }
 
-Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side)
+Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
-    return 0;
+    Bitboard moves = 0;
+
+    for(Bitboard curr_move = rook_pos;curr_move;)
+    {
+        curr_move <<= 8;
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = rook_pos;curr_move;)
+    {
+        curr_move >>= 8;
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = rook_pos;curr_move;)
+    {
+        curr_move <<= 1;
+        curr_move &= tbls->ClearFile[FILE_A];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = rook_pos;curr_move;)
+    {
+        curr_move >>= 1;
+        curr_move &= tbls->ClearFile[FILE_H];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    return moves;
 }
 
-Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side)
+Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
-    return bishop_move(queen_pos, own_side, enemy_side) | rook_move(queen_pos, own_side, enemy_side);
+    return bishop_move(queen_pos, own_side, enemy_side, tbls) | rook_move(queen_pos, own_side, enemy_side, tbls);
 }
 
 
