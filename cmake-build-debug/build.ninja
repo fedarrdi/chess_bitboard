@@ -79,6 +79,12 @@ build CMakeFiles/chess_bit_boards.dir/init_functions.c.obj: C_COMPILER__chess_bi
   OBJECT_DIR = CMakeFiles\chess_bit_boards.dir
   OBJECT_FILE_DIR = CMakeFiles\chess_bit_boards.dir
 
+build CMakeFiles/chess_bit_boards.dir/player_interface.c.obj: C_COMPILER__chess_bit_boards_Debug C$:/Users/fedar/CLionProject/chess_bit_boards/player_interface.c || cmake_object_order_depends_target_chess_bit_boards
+  DEP_FILE = CMakeFiles\chess_bit_boards.dir\player_interface.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\chess_bit_boards.dir
+  OBJECT_FILE_DIR = CMakeFiles\chess_bit_boards.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target chess_bit_boards
@@ -87,7 +93,7 @@ build CMakeFiles/chess_bit_boards.dir/init_functions.c.obj: C_COMPILER__chess_bi
 #############################################
 # Link the executable chess_bit_boards.exe
 
-build chess_bit_boards.exe: C_EXECUTABLE_LINKER__chess_bit_boards_Debug CMakeFiles/chess_bit_boards.dir/main.c.obj CMakeFiles/chess_bit_boards.dir/piece_movement.c.obj CMakeFiles/chess_bit_boards.dir/init_functions.c.obj
+build chess_bit_boards.exe: C_EXECUTABLE_LINKER__chess_bit_boards_Debug CMakeFiles/chess_bit_boards.dir/main.c.obj CMakeFiles/chess_bit_boards.dir/piece_movement.c.obj CMakeFiles/chess_bit_boards.dir/init_functions.c.obj CMakeFiles/chess_bit_boards.dir/player_interface.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\chess_bit_boards.dir
