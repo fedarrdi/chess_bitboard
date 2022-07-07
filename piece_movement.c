@@ -57,8 +57,45 @@ Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 
 Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
-    return 0;
-}
+    Bitboard moves = 0;
+
+    for(Bitboard curr_move = bishop_pos;curr_move;)
+    {
+        curr_move <<= 9;
+        curr_move &= tbls->ClearFile[FILE_A];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = bishop_pos;curr_move;)
+    {
+        curr_move >>= 9;
+        curr_move &= tbls->ClearFile[FILE_H];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = bishop_pos;curr_move;)
+    {
+        curr_move <<= 7;
+        curr_move &= tbls->ClearFile[FILE_H];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    for(Bitboard curr_move = bishop_pos;curr_move;)
+    {
+        curr_move >>= 7;
+        curr_move &= tbls->ClearFile[FILE_H];
+        curr_move &= ~own_side;
+        moves |= curr_move;
+        if(curr_move & enemy_side) break;
+    }
+
+    return moves;}
 
 Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
