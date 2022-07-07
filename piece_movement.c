@@ -95,7 +95,8 @@ Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side
         if(curr_move & enemy_side) break;
     }
 
-    return moves;}
+    return moves;
+}
 
 Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
