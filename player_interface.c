@@ -1,7 +1,8 @@
 #include "chess_types.h"
+#include "player_types.h"
 #include <stdio.h>
 
-void print_chess_board(struct bit_chess_board *board)
+void print_chess_board(ChessBoard *board)
 {
     const char *piece_to_symbol = "PHBRQKphbrqk";
 
