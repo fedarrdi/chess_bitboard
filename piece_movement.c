@@ -53,3 +53,23 @@ Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 
     return moves;
 }
+
+
+Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side)
+{
+    return 0;
+}
+
+Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side)
+{
+    return 0;
+}
+
+Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side)
+{
+    return bishop_move(queen_pos, own_side, enemy_side) | rook_move(queen_pos, own_side, enemy_side);
+}
+
+
+
+
