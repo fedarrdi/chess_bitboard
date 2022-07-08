@@ -16,10 +16,6 @@ void print_chess_board(ChessBoard *board)
 {
     const char *piece_to_symbol = "PHBRQKphbrqk";
 
-    printf("  X");
-    for (int x = 0; x < 8; x++)
-        printf("   %d", x);
-
     printf("\n");
     for(int y = 0;y < 8;y++)
     {
@@ -28,7 +24,7 @@ void print_chess_board(ChessBoard *board)
             printf("---+");
 
         printf("\n");
-        printf("%d ->|", y);
+        printf("%d ->|", 8 - y);
         for(int x = 0;x < 8;x++)
         {
             int square = y * 8 + x;
@@ -50,27 +46,30 @@ void print_chess_board(ChessBoard *board)
         }
         printf("\n");
     }
-    printf("  Y  ");
+    printf("      A   B   C   D   E   F   G   H");
     printf("\n\n");
 }
 
 void player_play_move(ChessBoard *board, enum color color, LookupTable *tbls)
 {
-    Move move;
-    Position *from = &move.from;
+    Position from;
 
     back:;
     printf("Enter cords of piece you want to move.\n");
-    scanf("%d", &from->x);
-    scanf("%d", &from->y);
+    char file;
+    scanf("%c", &file);
+    scanf("%d", &from.y);
 
-    if(from->x < 0 || from->x > 7 || from->y < 0 || from->y > 7)
+    from.y = 8 - from.y;
+    from.x = (int)(file - 'a');
+
+    if(from.x < 0 || from.x > 7 || from.y < 0 || from.y > 7)
     {
         printf("Invalid cords!!!\n");
         goto back;
     }
 
-    int from_square = from->y * 8 + from->x;
+    int from_square = from.y * 8 + from.x;
 
     if(!GET_BIT(board->occupied[both], from_square))
     {
@@ -101,20 +100,22 @@ void player_play_move(ChessBoard *board, enum color color, LookupTable *tbls)
         goto back;
     }
 
-    Position *to = &move.to;
+    Position to;
 
     back1:;
     printf("Enter where you want to move the piece.\n");
-    scanf("%d", &to->x);
-    scanf("%d", &to->y);
+    scanf("%c", &file);
+    scanf("%d", &to.y);
+    to.y = 8 - to.y;
+    to.x = (int)(file - 'a');
 
-    if(to->x < 0 || to->x > 7 || to->y < 0 || to->y > 7)
+    if(to.x < 0 || to.x > 7 || to.y < 0 || to.y > 7)
     {
         printf("Invalid cords!!!\n");
         goto back1;
     }
 
-    int to_square = to->y * 8 + to->x;
+    int to_square = to.y * 8 + to.x;
     if(!GET_BIT(piece_moves, to_square))
     {
         printf("This move is not valid!!!\n");
