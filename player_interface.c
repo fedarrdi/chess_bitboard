@@ -44,5 +44,22 @@ void print_chess_board(ChessBoard *board)
     printf("\n\n");
 }
 
+void player_play_move(ChessBoard *board, )
+{
+    Move move;
+    Position *from = &move.from;
 
+    back:;
+    printf("Enter cords of piece you want to move.");
+    scanf("%d", &from->x);
+    scanf("%d", &from->y);
+
+    if(from->x < 0 || from->x > 7 || from->y < 0 || from->y > 7)
+    {
+        printf("Invalid cords!!!");
+        goto back;
+    }
+
+    int square = from->y * 8 + from->x;
+}
 
