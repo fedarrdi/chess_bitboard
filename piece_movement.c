@@ -1,6 +1,6 @@
 #include "chess_types.h"
 
-Bitboard king_move(Bitboard king_pos, Bitboard own_side, LookupTable *tbls)
+Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
     Bitboard m1 = (king_pos >> 8),
             m2 = (king_pos << 8),
@@ -15,7 +15,7 @@ Bitboard king_move(Bitboard king_pos, Bitboard own_side, LookupTable *tbls)
     return moves  & ~own_side;
 }
 
-Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, LookupTable *tbls)
+Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
 {
     Bitboard m1 = (knight_pos >> 6) & tbls->ClearFile[FILE_A] & tbls->ClearFile[FILE_B],
             m2 = (knight_pos >> 10) & tbls->ClearFile[FILE_H] & tbls->ClearFile[FILE_G],
