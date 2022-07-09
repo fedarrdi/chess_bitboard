@@ -1,6 +1,7 @@
 #include "chess_types.h"
 #include "player_types.h"
 #include <stdio.h>
+
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
 Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
@@ -9,8 +10,11 @@ Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side
 Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
 Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls);
 
-Bitboard (*piece_move_f[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls) = {white_pawn_move,knight_move,bishop_move,rook_move,queen_move,knight_move,
-                                                                                                              black_pawn_move,knight_move,bishop_move,rook_move,queen_move,knight_move};
+Bitboard (*piece_move_f[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls) =
+        {
+           white_pawn_move,knight_move,bishop_move,rook_move,queen_move,king_move,
+           black_pawn_move,knight_move,bishop_move,rook_move,queen_move,king_move
+        };
 
 void print_chess_board(ChessBoard *board)
 {
@@ -130,15 +134,3 @@ void player_play_move(ChessBoard *board, enum color color, LookupTable *tbls)
     POP_BIT(board->occupied[both], from_square);
     SET_BIT(board->occupied[both], to_square);
 }
-
-
-
-
-
-
-
-
-
-
-
-
