@@ -1,4 +1,5 @@
 #include "chess_types.h"
+#include <stdio.h>
 
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
@@ -18,34 +19,50 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
 {
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
-    Bitboard curr_piece_moves = 0;
 
     for (int piece_index = start_index; piece_index < end_index; piece_index++)
     {
         Bitboard copy_position = board->pieces[piece_index];
 
-
-        if(piece_index == w_pawn)
+        if(piece_index == b_pawn || piece_index == w_pawn)
         {
-
             while(copy_position)
             {
                 int bit_index_from = get_f1bit_index(copy_position);
                 POP_BIT(copy_position, bit_index_from);
-                Bitboard white_pawn_moves = white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls);
 
-                while(white_pawn_moves)
+                Bitboard pawn_moves = (side == white)
+                        ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls)
+                        : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls);
+
+                while(pawn_moves)
                 {
-                    int bit_index_to = get_f1bit_index(white_pawn_moves);
-                    POP_BIT(white_pawn_moves, bit_index_to);
+                    int bit_index_to = get_f1bit_index(pawn_moves);
+                    POP_BIT(pawn_moves, bit_index_to);
+
+                    if((side == white && (1ULL << bit_index_to & tbls->MaskRank[RANK_8])))
+                    {
+                        printf("Pawn move: from %d -----> to %d promotion to white knight\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to white bishop\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to white rook\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to white queen\n", bit_index_from, bit_index_to);
+
+                    }
+
+                    else if(side == black && ((1ULL << bit_index_to & tbls->MaskRank[RANK_1])))
+                    {
+                        printf("Pawn move: from %d -----> to %d promotion to black knight\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to black bishop\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to black rook\n", bit_index_from, bit_index_to);
+                        printf("Pawn move: from %d -----> to %d promotion to black queen\n", bit_index_from, bit_index_to);
+                    }
+
+                    else
+                    {
+                        printf("Pawn move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+                    }
                 }
             }
-
-        }
-
-        if(piece_index == b_pawn)
-        {
-
         }
 
         if(piece_index == w_bishop || piece_index == b_bishop)
