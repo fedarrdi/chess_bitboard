@@ -1,6 +1,6 @@
 #include "chess_types.h"
 
-Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard m1 = (king_pos >> 8),
             m2 = (king_pos << 8),
@@ -15,7 +15,7 @@ Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, Lo
     return moves  & ~own_side;
 }
 
-Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard m1 = (knight_pos >> 6) & tbls->ClearFile[FILE_A] & tbls->ClearFile[FILE_B],
             m2 = (knight_pos >> 10) & tbls->ClearFile[FILE_H] & tbls->ClearFile[FILE_G],
@@ -30,7 +30,7 @@ Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side
     return moves & ~own_side;
 }
 
-Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard all_pieces = own_side | enemy_side;
     Bitboard white_pawn_one_step  = (pawn_pos >> 8) & ~all_pieces,
@@ -42,7 +42,7 @@ Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
     return moves;
 }
 
-Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard all_pieces = own_side | enemy_side;
     Bitboard black_pawn_one_step  = (pawn_pos << 8) & ~all_pieces,
@@ -55,7 +55,7 @@ Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 }
 
 
-Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard moves = 0;
 
@@ -98,7 +98,7 @@ Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side
     return moves;
 }
 
-Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard moves = 0;
 
@@ -139,7 +139,7 @@ Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, Lo
     return moves;
 }
 
-Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, LookupTable *tbls)
+Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     return bishop_move(queen_pos, own_side, enemy_side, tbls) | rook_move(queen_pos, own_side, enemy_side, tbls);
 }
