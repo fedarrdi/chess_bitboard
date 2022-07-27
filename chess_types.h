@@ -31,6 +31,7 @@ typedef struct bit_chess_board
     /// index w_pawn, w_knight, w_bishop, w_queen, w_rook, w_king, b_pawn, b_knight, b_bishop, b_queen, b_rook, b_king
     Bitboard pieces[12];///every piece bitboard
     char castles[4];/// white king side castle; wide queen side castle; black king side castle; black queen side castle
+    enum color turn;///who moves in this position
 } ChessBoard;
 
 typedef struct bit_lookup_table

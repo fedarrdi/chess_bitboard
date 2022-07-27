@@ -147,7 +147,6 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
             }
 
             if(side == black && board->castles[qc])
-
             {
 
             }

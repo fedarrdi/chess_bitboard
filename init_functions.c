@@ -57,9 +57,11 @@ void parse_FEN(const char *FEN, ChessBoard *board)
     for(int i = 0;i < 3;board->occupied[i++] = 0);
     for(int i = 0;i < 12;board->pieces[i++] = 0);
 
-    int board_index = 0, rank = 0, file = 0;
-    for(int i = 0;i < strlen(FEN);i++)
+    int board_index = 0, rank = 0, file = 0, n = strlen(FEN), i;
+    for(i = 0;i < n;i++)
     {
+        if(FEN[i] == ' ') break;
+
         if(FEN[i] == '/') continue;
 
         if(FEN[i] >= '1' && FEN[i] <= '8')
@@ -67,7 +69,6 @@ void parse_FEN(const char *FEN, ChessBoard *board)
             file += FEN[i] - '0';
             continue;
         }
-
 
         if(FEN[i] >= 'A' && FEN[i] <= 'Z')
         {
@@ -109,4 +110,18 @@ void parse_FEN(const char *FEN, ChessBoard *board)
                              board->pieces[w_king]   | board->pieces[w_pawn];
 
     board->occupied[both] = board->occupied[white] | board->occupied[black];
+
+
+    if(FEN[++i] == 'w')
+        board->turn = white;
+    else if(FEN[i] == 'b')
+        board->turn = black;
+
+    for(i+=2;i < n;i++)
+    {
+        if(FEN[i] == 'K') board->castles[KC] = 1;
+        if(FEN[i] == 'Q') board->castles[QC] = 1;
+        if(FEN[i] == 'k') board->castles[kc] = 1;
+        if(FEN[i] == 'q') board->castles[qc] = 1;
+    }
 }
