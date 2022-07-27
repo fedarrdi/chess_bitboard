@@ -97,3 +97,8 @@ LookupTable fill_lookup_table()
 
     return tbls;
 }
+
+void parse_FEN(const char *FEN, ChessBoard *board)
+{
+
+}

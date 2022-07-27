@@ -56,7 +56,7 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
 
         if(piece_index == b_pawn || piece_index == w_pawn)
         {
-            while(copy_position)
+            while(copy_position)///en passant need to be added
             {
                 int bit_index_from = get_f1bit_index(copy_position);
                 POP_BIT(copy_position, bit_index_from);
@@ -95,24 +95,27 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
             }
         }
 
-        if(piece_index == w_bishop || piece_index == b_bishop)
+        if(piece_index == w_bishop || piece_index == b_bishop || piece_index == w_knight || piece_index == b_knight ||
+           piece_index == w_rook || piece_index == b_rook || piece_index == w_queen || piece_index == b_queen)
         {
+            while(copy_position)
+            {
+                int bit_index_from = get_f1bit_index(copy_position);
+                POP_BIT(copy_position, bit_index_from);
+                Bitboard piece_moves = attack_array[piece_index](1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls);
+                while(piece_moves)
+                {
+                    int bit_index_to = get_f1bit_index(piece_moves);
+                    POP_BIT(piece_moves, bit_index_to);
 
-        }
+                    if(piece_index == w_bishop || piece_index == b_bishop) printf("Bishop ");
+                    if(piece_index == w_knight || piece_index == b_knight) printf("Knight ");
+                    if(piece_index == w_rook || piece_index == b_rook) printf("Rook ");
+                    if(piece_index == w_queen || piece_index == b_queen) printf("Queen ");
 
-        if(piece_index == w_knight || piece_index == b_knight)
-        {
-
-        }
-
-        if(piece_index == w_rook || piece_index == b_rook)
-        {
-
-        }
-
-        if(piece_index == w_queen || piece_index == b_queen)
-        {
-
+                    printf("move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+                }
+            }
         }
 
         if(piece_index == w_king || piece_index == b_king)

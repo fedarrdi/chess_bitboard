@@ -13,8 +13,6 @@ int main()
     LookupTable tbls = fill_lookup_table();
 
     print_chess_board(&board);
-    print_bitboard(board.occupied[both]);
-    print_bitboard(tbls.MaskRank[RANK_8]);
     generate_position_moves(&board, white, &tbls);
 
 
