@@ -1,6 +1,6 @@
 #include "chess_types.h"
 #include<stdio.h>
-
+#include<string.h>
 void print_bitboard(Bitboard bitboard)
 {
     for(int rank = 0; rank < 8; rank++)
@@ -18,53 +18,6 @@ void print_bitboard(Bitboard bitboard)
     printf("\n     A  B  C  D  E  F  G  H\n\n");
 
     printf("Bitboard : %llu\n\n", bitboard);
-}
-
-ChessBoard fill_chess_board()
-{
-    ChessBoard chess_board;
-    for(int i = 0;i < 3;chess_board.occupied[i++] = 0);
-    for(int i = 0;i < 12;chess_board.pieces[i++] = 0);
-
-    for(int i = 0;i < 8;i++)
-    {
-        int b_pawn_square = 8 + i, w_pawn_square = 6 * 8 + i;
-        SET_BIT(chess_board.pieces[b_pawn], b_pawn_square);
-        SET_BIT(chess_board.pieces[w_pawn], w_pawn_square);
-    }
-
-    SET_BIT(chess_board.pieces[b_rook], a8);
-    SET_BIT(chess_board.pieces[b_rook], h8);
-    SET_BIT(chess_board.pieces[w_rook], a1);
-    SET_BIT(chess_board.pieces[w_rook], h1);
-
-    SET_BIT(chess_board.pieces[b_knight], b8);
-    SET_BIT(chess_board.pieces[b_knight], g8);
-    SET_BIT(chess_board.pieces[w_knight], b1);
-    SET_BIT(chess_board.pieces[w_knight], g1);
-
-    SET_BIT(chess_board.pieces[b_bishop], c8);
-    SET_BIT(chess_board.pieces[b_bishop], f8);
-    SET_BIT(chess_board.pieces[w_bishop], c1);
-    SET_BIT(chess_board.pieces[w_bishop], f1);
-
-    SET_BIT(chess_board.pieces[b_queen], d8);
-    SET_BIT(chess_board.pieces[w_queen], d1);
-
-    SET_BIT(chess_board.pieces[b_king], e8);
-    SET_BIT(chess_board.pieces[w_king], e1);
-
-    chess_board.occupied[black] = chess_board.pieces[b_rook]   | chess_board.pieces[b_knight] |
-                                  chess_board.pieces[b_bishop] | chess_board.pieces[b_queen]  |
-                                  chess_board.pieces[b_king]   | chess_board.pieces[b_pawn];
-
-    chess_board.occupied[white] = chess_board.pieces[w_rook]   | chess_board.pieces[w_knight] |
-                                  chess_board.pieces[w_bishop] | chess_board.pieces[w_queen]  |
-                                  chess_board.pieces[w_king]   | chess_board.pieces[w_pawn];
-
-    chess_board.occupied[both] = chess_board.occupied[white] | chess_board.occupied[black];
-
-    return chess_board;
 }
 
 LookupTable fill_lookup_table()
@@ -100,5 +53,59 @@ LookupTable fill_lookup_table()
 
 void parse_FEN(const char *FEN, ChessBoard *board)
 {
+    for(int i = 0;i < 3;board->occupied[i++] = 0);
+    for(int i = 0;i < 12;board->pieces[i++] = 0);
 
+    int board_index = 0, rank = 0, file = 0;
+    for(int i = 0;i < strlen(FEN);i++)
+    {
+        if(FEN[i] == '/') continue;
+
+        if(FEN[i] >= '1' && FEN[i] <= '8')
+        {
+            file += FEN[i] - '0';
+            continue;
+        }
+
+
+        if(FEN[i] >= 'A' && FEN[i] <= 'Z')
+        {
+            if(FEN[i] == 'P') board_index = w_pawn;
+            if(FEN[i] == 'N') board_index = w_knight;
+            if(FEN[i] == 'B') board_index = w_bishop;
+            if(FEN[i] == 'R') board_index = w_rook;
+            if(FEN[i] == 'Q') board_index = w_queen;
+            if(FEN[i] == 'K') board_index = w_king;
+
+
+        }
+
+        if(FEN[i] >= 'a' && FEN[i] <= 'z')
+        {
+            if(FEN[i] == 'p') board_index = b_pawn;
+            if(FEN[i] == 'n') board_index = b_knight;
+            if(FEN[i] == 'b') board_index = b_bishop;
+            if(FEN[i] == 'r') board_index = b_rook;
+            if(FEN[i] == 'q') board_index = b_queen;
+            if(FEN[i] == 'k') board_index = b_king;
+        }
+        if(file > 8)
+        {
+            rank ++;
+            file -= 8;
+        }
+
+        int square = rank * 8 + file;
+        SET_BIT(board->pieces[board_index], square);
+        file++;
+    }
+    board->occupied[black] = board->pieces[b_rook]   | board->pieces[b_knight] |
+                             board->pieces[b_bishop] | board->pieces[b_queen]  |
+                             board->pieces[b_king]   | board->pieces[b_pawn];
+
+    board->occupied[white] = board->pieces[w_rook]   | board->pieces[w_knight] |
+                             board->pieces[w_bishop] | board->pieces[w_queen]  |
+                             board->pieces[w_king]   | board->pieces[w_pawn];
+
+    board->occupied[both] = board->occupied[white] | board->occupied[black];
 }

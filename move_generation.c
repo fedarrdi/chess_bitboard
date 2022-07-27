@@ -44,7 +44,6 @@ Bitboard calc_all_attacks(const ChessBoard *board, enum color side, const Lookup
     return attacks;
 }
 
-
 void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls)
 {
     int start_index = side == white ? w_pawn : b_pawn;
@@ -98,7 +97,7 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
         if(piece_index == w_bishop || piece_index == b_bishop || piece_index == w_knight || piece_index == b_knight ||
            piece_index == w_rook || piece_index == b_rook || piece_index == w_queen || piece_index == b_queen)
         {
-            while(copy_position)
+            while(copy_position)///need to check if the piece is moved does it result in check
             {
                 int bit_index_from = get_f1bit_index(copy_position);
                 POP_BIT(copy_position, bit_index_from);
@@ -118,9 +117,21 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
             }
         }
 
-        if(piece_index == w_king || piece_index == b_king)
+        if(piece_index == w_king || piece_index == b_king)///need to add castle
         {
+            Bitboard enemy_attacks = calc_all_attacks(board, !side, tbls);
+            Bitboard king_incomplete_moves = king_move(copy_position, board->occupied[side], board->occupied[!side], tbls);
+            Bitboard king_moves = king_incomplete_moves & ~enemy_attacks;
 
+            int bit_index_from = get_f1bit_index(copy_position);
+            while(king_moves)
+            {
+                int bit_index_to = get_f1bit_index(king_moves);
+                POP_BIT(king_moves, bit_index_to);
+                printf("King move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+            }
         }
+
     }
+
 }
