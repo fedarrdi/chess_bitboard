@@ -30,26 +30,36 @@ Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side
     return moves & ~own_side;
 }
 
+Bitboard white_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
+{
+    Bitboard white_pawn_left_attack = (pawn_pos >> 9) & tbls->ClearFile[FILE_H] & enemy_side,
+             white_pawn_right_attack = (pawn_pos >> 7) & tbls->ClearFile[FILE_A] & enemy_side;
+    return white_pawn_left_attack | white_pawn_right_attack;
+}
+
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard all_pieces = own_side | enemy_side;
     Bitboard white_pawn_one_step  = (pawn_pos >> 8) & ~all_pieces,
             white_pawn_two_step  = ((white_pawn_one_step & tbls->MaskRank[RANK_3]) >> 8) & ~all_pieces,
-            white_pawn_left_attack = (pawn_pos >> 9) & tbls->ClearFile[FILE_H] & enemy_side,
-            white_pawn_right_attack = (pawn_pos >> 7) & tbls->ClearFile[FILE_A] & enemy_side,
-            moves = white_pawn_one_step | white_pawn_two_step | white_pawn_left_attack | white_pawn_right_attack;
-
+            moves = white_pawn_one_step | white_pawn_two_step | white_pawn_attacks(pawn_pos, own_side, enemy_side, tbls);
     return moves;
 }
+
+Bitboard black_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
+{
+    Bitboard black_pawn_left_attack = (pawn_pos << 9) & tbls->ClearFile[FILE_A] & enemy_side,
+             black_pawn_right_attack = (pawn_pos << 7) & tbls->ClearFile[FILE_H] & enemy_side;
+    return black_pawn_left_attack | black_pawn_right_attack;
+}
+
 
 Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard all_pieces = own_side | enemy_side;
     Bitboard black_pawn_one_step  = (pawn_pos << 8) & ~all_pieces,
             black_pawn_two_step  = ((black_pawn_one_step & tbls->MaskRank[RANK_6]) << 8) & ~all_pieces,
-            black_pawn_left_attack = (pawn_pos << 9) & tbls->ClearFile[FILE_A] & enemy_side,
-            black_pawn_right_attack = (pawn_pos << 7) & tbls->ClearFile[FILE_H] & enemy_side,
-            moves = black_pawn_one_step | black_pawn_two_step | black_pawn_left_attack | black_pawn_right_attack;
+            moves = black_pawn_one_step | black_pawn_two_step | black_pawn_attacks(pawn_pos, own_side, enemy_side, tbls);
 
     return moves;
 }

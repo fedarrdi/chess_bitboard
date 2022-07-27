@@ -16,5 +16,7 @@ int main()
     print_bitboard(board.occupied[both]);
     print_bitboard(tbls.MaskRank[RANK_8]);
     generate_position_moves(&board, white, &tbls);
+
+
     return 0;
 }

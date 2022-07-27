@@ -8,12 +8,42 @@ Bitboard black_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard rook_move(Bitboard rook_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
+Bitboard white_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
+Bitboard black_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
+
+Bitboard (*attack_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
+        {
+                white_pawn_attacks, knight_move, bishop_move, rook_move, queen_move, king_move,
+                black_pawn_attacks, knight_move, bishop_move, rook_move, queen_move, king_move
+        };
 
 int get_f1bit_index(Bitboard board)
 {
     for(int i = 0;i < 64;i++)
         if(GET_BIT(board, i)) return i;
 }
+
+Bitboard calc_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
+{
+    int start_index = side == white ? w_pawn : b_pawn;
+    int end_index = side == white ? w_king : b_king;
+
+    Bitboard attacks = 0;
+
+    for(int i = start_index;i <= end_index; i++)
+    {
+        Bitboard copy_board = board->pieces[i];
+
+        while(copy_board)
+        {
+            int bit_index = get_f1bit_index(copy_board);
+            POP_BIT(copy_board, bit_index);
+            attacks |= attack_array[i](1ULL << bit_index, board->occupied[side], board->occupied[!side], tbls);
+        }
+    }
+    return attacks;
+}
+
 
 void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls)
 {
