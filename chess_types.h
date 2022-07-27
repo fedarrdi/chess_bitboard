@@ -23,12 +23,14 @@ enum color {black, white, both};
 enum piece {w_pawn, w_knight, w_bishop, w_rook, w_queen, w_king, b_pawn, b_knight, b_bishop, b_rook, b_queen, b_king};
 enum file {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
 enum rank {RANK_8, RANK_7, RANK_6, RANK_5, RANK_4, RANK_3, RANK_2, RANK_1};
+enum castle {KC, QC, kc, qc};
 
 typedef struct bit_chess_board
 {
     Bitboard occupied[3];///by white by black by both
     /// index w_pawn, w_knight, w_bishop, w_queen, w_rook, w_king, b_pawn, b_knight, b_bishop, b_queen, b_rook, b_king
     Bitboard pieces[12];///every piece bitboard
+    char castles[4];/// white king side castle; wide queen side castle; black king side castle; black queen side castle
 } ChessBoard;
 
 typedef struct bit_lookup_table

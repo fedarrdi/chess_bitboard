@@ -130,6 +130,28 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                 POP_BIT(king_moves, bit_index_to);
                 printf("King move: from %d -----> to %d\n", bit_index_from, bit_index_to);
             }
+
+            if(side == white && board->castles[KC])
+            {
+
+            }
+
+            if(side == white && board->castles[QC])
+            {
+
+            }
+
+            if(side == black && board->castles[kc])
+            {
+
+            }
+
+            if(side == black && board->castles[qc])
+
+            {
+
+            }
+
         }
 
     }

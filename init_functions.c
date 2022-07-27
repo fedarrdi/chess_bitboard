@@ -1,6 +1,7 @@
 #include "chess_types.h"
 #include<stdio.h>
 #include<string.h>
+
 void print_bitboard(Bitboard bitboard)
 {
     for(int rank = 0; rank < 8; rank++)

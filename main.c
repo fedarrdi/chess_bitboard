@@ -11,7 +11,7 @@ void parse_FEN(const char *FEN, ChessBoard *board);
 int main()
 {
     ChessBoard board;
-    parse_FEN("r1b1k1nr/p2p1pNp/n2B4/1p1NP2P/6P1/3P1Q2/P1P1K3/q5b1", &board);
+    parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", &board);
     LookupTable tbls = fill_lookup_table();
 
     print_chess_board(&board);
