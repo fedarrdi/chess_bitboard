@@ -11,11 +11,11 @@ void parse_FEN(const char *FEN, ChessBoard *board);
 int main()
 {
     ChessBoard board;
-    parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w Kkq", &board);
+    parse_FEN("rq2k2r/pbpp1pbp/np3np1/4p3/1BPPP3/NQ5N/PP2BPPP/R3K2R w KQkq", &board);
     LookupTable tbls = fill_lookup_table();
 
     print_chess_board(&board);
-    generate_position_moves(&board, white, &tbls);
+    generate_position_moves(&board, black, &tbls);
 
 
     return 0;

@@ -49,7 +49,7 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
 
-    for (int piece_index = start_index; piece_index < end_index; piece_index++)
+    for (int piece_index = start_index; piece_index <= end_index; piece_index++)
     {
         Bitboard copy_position = board->pieces[piece_index];
 
@@ -133,22 +133,36 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
 
             if(side == white && board->castles[KC])
             {
-
+                if(!GET_BIT(board->occupied[side], f1) && !GET_BIT(board->occupied[side], g1) && !((1ULL << f1) & enemy_attacks) &&  !((1ULL << g1) & enemy_attacks))
+                {
+                    printf("King side castle\n");
+                }
             }
 
             if(side == white && board->castles[QC])
             {
-
+                if(!GET_BIT(board->occupied[side], b1) && !GET_BIT(board->occupied[side], c1) && !GET_BIT(board->occupied[side], d1)
+                                                       && !((1ULL << c1) & enemy_attacks)        && !((1ULL << d1) & enemy_attacks))
+                {
+                    printf("Queen side castle\n");
+                }
             }
 
             if(side == black && board->castles[kc])
             {
-
+                if(!GET_BIT(board->occupied[side], f8) && !GET_BIT(board->occupied[side], g8) && !((1ULL << f8) & enemy_attacks) &&  !((1ULL << g8) & enemy_attacks))
+                {
+                    printf("King side castle\n");
+                }
             }
 
+            if(!GET_BIT(board->occupied[side], b8) && !GET_BIT(board->occupied[side], c8) && !GET_BIT(board->occupied[side], d8)
+               && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
+            {
+                printf("Queen side castle\n");
+            }
             if(side == black && board->castles[qc])
             {
-
             }
 
         }
