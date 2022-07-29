@@ -44,18 +44,18 @@ Bitboard calc_all_attacks(const ChessBoard *board, enum color side, const Lookup
     return attacks;
 }
 
-void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls)
+void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls)
 {
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
-
+    Bitboard enemy_attacks = calc_all_attacks(board, !side, tbls);
     for (int piece_index = start_index; piece_index <= end_index; piece_index++)
     {
         Bitboard copy_position = board->pieces[piece_index];
 
         if(piece_index == b_pawn || piece_index == w_pawn)
         {
-            while(copy_position)///en passant need to be added
+            while(copy_position)
             {
                 int bit_index_from = get_f1bit_index(copy_position);
                 POP_BIT(copy_position, bit_index_from);
@@ -117,9 +117,8 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
             }
         }
 
-        if(piece_index == w_king || piece_index == b_king)///need to add castle
+        if(piece_index == w_king || piece_index == b_king)
         {
-            Bitboard enemy_attacks = calc_all_attacks(board, !side, tbls);
             Bitboard king_incomplete_moves = king_move(copy_position, board->occupied[side], board->occupied[!side], tbls);
             Bitboard king_moves = king_incomplete_moves & ~enemy_attacks;
 
@@ -156,13 +155,13 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                 }
             }
 
-            if(!GET_BIT(board->occupied[side], b8) && !GET_BIT(board->occupied[side], c8) && !GET_BIT(board->occupied[side], d8)
-               && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
-            {
-                printf("Queen side castle\n");
-            }
             if(side == black && board->castles[qc])
             {
+                if(!GET_BIT(board->occupied[side], b8) && !GET_BIT(board->occupied[side], c8) && !GET_BIT(board->occupied[side], d8)
+                   && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
+                {
+                    printf("Queen side castle\n");
+                }
             }
 
         }
