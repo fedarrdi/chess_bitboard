@@ -120,8 +120,9 @@ void parse_FEN(const char *FEN, ChessBoard *board)
     for(i+=2;i < n;i++)
     {
         if(FEN[i] == 'K') board->castles[KC] = 1;
-        if(FEN[i] == 'Q') board->castles[QC] = 1;
-        if(FEN[i] == 'k') board->castles[kc] = 1;
-        if(FEN[i] == 'q') board->castles[qc] = 1;
+        else if(FEN[i] == 'Q') board->castles[QC] = 1;
+        else if(FEN[i] == 'k') board->castles[kc] = 1;
+        else if(FEN[i] == 'q') board->castles[qc] = 1;
+        else  break;
     }
 }

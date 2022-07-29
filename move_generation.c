@@ -1,6 +1,6 @@
 #include "chess_types.h"
 #include <stdio.h>
-
+void print_bitboard(Bitboard bitboard);
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
@@ -23,7 +23,7 @@ int get_f1bit_index(Bitboard board)
         if(GET_BIT(board, i)) return i;
 }
 
-Bitboard calc_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
+Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
 {
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
@@ -46,9 +46,12 @@ Bitboard calc_all_attacks(const ChessBoard *board, enum color side, const Lookup
 
 void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls)
 {
+    printf( (side == white) ? ("              WHITE MOVES\n") : ("                BLACK MOVES\n"));
+
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
-    Bitboard enemy_attacks = calc_all_attacks(board, !side, tbls);
+    Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
+
     for (int piece_index = start_index; piece_index <= end_index; piece_index++)
     {
         Bitboard copy_position = board->pieces[piece_index];
@@ -64,40 +67,56 @@ void generate_position_moves(ChessBoard *board, enum color side, const LookupTab
                         ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls)
                         : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls);
 
+
+                POP_BIT(board->pieces[piece_index], bit_index_from);
+                POP_BIT(board->pieces[piece_index], bit_index_from);
+
                 while(pawn_moves)
                 {
                     int bit_index_to = get_f1bit_index(pawn_moves);
                     POP_BIT(pawn_moves, bit_index_to);
 
-                    if((side == white && (1ULL << bit_index_to & tbls->MaskRank[RANK_8])))
-                    {
-                        printf("Pawn move: from %d -----> to %d promotion to white knight\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to white bishop\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to white rook\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to white queen\n", bit_index_from, bit_index_to);
 
+                    SET_BIT(board->pieces[piece_index], bit_index_to);
+                    Bitboard secret_king_attacks = generate_all_attacks(board, !side, tbls);
+                    if(bit_index_from == 51)
+                    {
+                        print_bitboard(secret_king_attacks);
+                        print_bitboard(board->pieces[piece_index]);
                     }
 
-                    else if(side == black && ((1ULL << bit_index_to & tbls->MaskRank[RANK_1])))
+                    if(!(secret_king_attacks & board->pieces[end_index]))
                     {
-                        printf("Pawn move: from %d -----> to %d promotion to black knight\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to black bishop\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to black rook\n", bit_index_from, bit_index_to);
-                        printf("Pawn move: from %d -----> to %d promotion to black queen\n", bit_index_from, bit_index_to);
-                    }
+                        if ((side == white && (1ULL << bit_index_to & tbls->MaskRank[RANK_8])))
+                        {
 
-                    else
-                    {
-                        printf("Pawn move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to white knight\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to white bishop\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to white rook\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to white queen\n", bit_index_from, bit_index_to);
+
+                        }
+                        else if (side == black && ((1ULL << bit_index_to & tbls->MaskRank[RANK_1])))
+                        {
+                            printf("Pawn move: from %d -----> to %d promotion to black knight\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to black bishop\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to black rook\n", bit_index_from, bit_index_to);
+                            printf("Pawn move: from %d -----> to %d promotion to black queen\n", bit_index_from, bit_index_to);
+                        }
+                        else
+                            printf("Pawn move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+
                     }
+                    POP_BIT(board->pieces[piece_index], bit_index_to);
                 }
+                SET_BIT(board->pieces[piece_index], bit_index_from);
             }
         }
 
         if(piece_index == w_bishop || piece_index == b_bishop || piece_index == w_knight || piece_index == b_knight ||
            piece_index == w_rook || piece_index == b_rook || piece_index == w_queen || piece_index == b_queen)
         {
-            while(copy_position)///need to check if the piece is moved does it result in check
+            while(copy_position)
             {
                 int bit_index_from = get_f1bit_index(copy_position);
                 POP_BIT(copy_position, bit_index_from);
@@ -131,40 +150,25 @@ void generate_position_moves(ChessBoard *board, enum color side, const LookupTab
             }
 
             if(side == white && board->castles[KC])
-            {
                 if(!GET_BIT(board->occupied[side], f1) && !GET_BIT(board->occupied[side], g1) && !((1ULL << f1) & enemy_attacks) &&  !((1ULL << g1) & enemy_attacks))
-                {
                     printf("King side castle\n");
-                }
-            }
 
             if(side == white && board->castles[QC])
-            {
                 if(!GET_BIT(board->occupied[side], b1) && !GET_BIT(board->occupied[side], c1) && !GET_BIT(board->occupied[side], d1)
                                                        && !((1ULL << c1) & enemy_attacks)        && !((1ULL << d1) & enemy_attacks))
-                {
                     printf("Queen side castle\n");
-                }
-            }
 
             if(side == black && board->castles[kc])
-            {
                 if(!GET_BIT(board->occupied[side], f8) && !GET_BIT(board->occupied[side], g8) && !((1ULL << f8) & enemy_attacks) &&  !((1ULL << g8) & enemy_attacks))
-                {
                     printf("King side castle\n");
-                }
-            }
 
             if(side == black && board->castles[qc])
-            {
                 if(!GET_BIT(board->occupied[side], b8) && !GET_BIT(board->occupied[side], c8) && !GET_BIT(board->occupied[side], d8)
                    && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
-                {
                     printf("Queen side castle\n");
-                }
-            }
 
         }
+
 
     }
 

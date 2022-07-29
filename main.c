@@ -4,19 +4,18 @@
 void print_bitboard(Bitboard bitboard);
 LookupTable fill_lookup_table();
 void print_chess_board(ChessBoard *board);
-ChessBoard fill_chess_board();
-void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls);
+void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls);
 void parse_FEN(const char *FEN, ChessBoard *board);
+void print_chess_board_pos(ChessBoard *board);
 
 int main()
 {
     ChessBoard board;
-    parse_FEN("rq2k2r/pbpp1pbp/np3np1/4p3/1BPPP3/NQ5N/PP2BPPP/R3K2R w KQkq", &board);
+    parse_FEN("rnbqk1nr/pppp1ppp/4p3/8/1b6/3P4/PPPBPPPP/RN1QKBNR w KQkq", &board);
     LookupTable tbls = fill_lookup_table();
 
     print_chess_board(&board);
-    generate_position_moves(&board, black, &tbls);
-
+    generate_position_moves(&board, white, &tbls);
 
     return 0;
 }
