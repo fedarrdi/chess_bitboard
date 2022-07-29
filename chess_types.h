@@ -5,6 +5,26 @@
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
 
+#define ENCODE_MOVE(from , to, piece, promoted_piece, capture, double_pawn_push, enpassant, castling) \
+(from) | \
+((to) << 6) | \
+((piece) << 12) | \
+((promoted_piece << 16)) | \
+((capture << 20)) | \
+((double_pawn_push << 21)) | \
+((enpassant) << 22) | \
+((castling) << 23)
+
+#define DECODE_MOVE_FROM(move) (move & 0x3f)
+#define DECODE_MOVE_To(move) (move & 0xfc0)
+#define DECODE_MOVE_PIECE(move) (move & 0xf000)
+#define DECODE_MOVE_PROMOTED_PIECE(move) (move & 0xF0000)
+#define DECODE_MOVE_CAPTURE(move) (move & 0x100000)
+#define DECODE_MOVE_DOUBLE_PAWN_PUSH(move) (move & 0x200000)
+#define DECODE_MOVE_ENPASSANT(move) (move & 0x400000)
+#define DECODE_MOVE_CASTLING(move) (move & 0x800000)
+
+
 typedef unsigned long long Bitboard;
 
 enum

@@ -3,4 +3,4 @@ project(chess_bit_boards C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(chess_bit_boards main.c chess_types.h piece_movement.c init_functions.c player_interface.c move_generation.c)
+add_executable(chess_bit_boards main.c chess_types.h piece_movement.c init_functions.c player_interface.c move_generation.c make_move.c)

@@ -6,7 +6,6 @@ LookupTable fill_lookup_table();
 void print_chess_board(ChessBoard *board);
 void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls);
 void parse_FEN(const char *FEN, ChessBoard *board);
-void print_chess_board_pos(ChessBoard *board);
 
 int main()
 {
@@ -16,6 +15,7 @@ int main()
 
     print_chess_board(&board);
     generate_position_moves(&board, white, &tbls);
+    int move = ENCODE_MOVE(a1, a2, w_rook, 0, 0, 0, 0, 0);
 
     return 0;
 }

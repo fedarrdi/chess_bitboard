@@ -21,6 +21,7 @@ int get_f1bit_index(Bitboard board)
 {
     for(int i = 0;i < 64;i++)
         if(GET_BIT(board, i)) return i;
+    return -1;
 }
 
 Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
@@ -168,8 +169,5 @@ void generate_position_moves(ChessBoard *board, enum color side, const LookupTab
                     printf("Queen side castle\n");
 
         }
-
-
     }
-
 }
