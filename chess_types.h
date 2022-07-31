@@ -5,6 +5,20 @@
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
 
+/*
+            MOVE FROM                  000 0000 0000 0000 0000 0011 1111
+            MOVE TO                    000 0000 0000 0000 1111 1100 0000
+            MOVE PIECE                 000 0000 0000 1111 0000 0000 0000
+            MOVE PROMOTION             000 0000 1111 0000 0000 0000 0000
+            MOVE CAPTURE               000 1111 0000 0000 0000 0000 0000
+            MOVE DOUBLE PUSH PAWN FLAG 001 0000 0000 0000 0000 0000 0000
+            MOVE EN PASSANT FLAG       010 0000 0000 0000 0000 0000 0000
+            MOVE CASTLING FLAG         100 0000 0000 0000 0000 0000 0000
+
+                    THE MEMORY IS ROUNDED TO THAT OF AN INT
+ */
+
+
 #define ENCODE_MOVE(from , to, piece, promoted_piece, capture, double_pawn_push, enpassant, castling) \
 (from) | \
 ((to) << 6) | \
@@ -16,13 +30,14 @@
 ((castling) << 23)
 
 #define DECODE_MOVE_FROM(move) (move & 0x3f)
-#define DECODE_MOVE_To(move) (move & 0xfc0)
-#define DECODE_MOVE_PIECE(move) (move & 0xf000)
-#define DECODE_MOVE_PROMOTED_PIECE(move) (move & 0xF0000)
-#define DECODE_MOVE_CAPTURE(move) (move & 0x100000)
-#define DECODE_MOVE_DOUBLE_PAWN_PUSH(move) (move & 0x200000)
-#define DECODE_MOVE_ENPASSANT(move) (move & 0x400000)
-#define DECODE_MOVE_CASTLING(move) (move & 0x800000)
+#define DECODE_MOVE_TO(move) ((move & 0xfc0) >> 6)
+#define DECODE_MOVE_PIECE(move) ((move & 0xf000) >> 12)
+#define DECODE_MOVE_PROMOTED_PIECE(move) ((move & 0xF0000) >> 16)
+#define DECODE_MOVE_CAPTURE(move) ((move & 0xF00000) >> 20)
+#define DECODE_MOVE_DOUBLE_PAWN_PUSH(move) ((move & 0x1000000) >> 24)
+#define DECODE_MOVE_ENPASSANT(move) ((move & 0x2000000) >> 25)
+#define DECODE_MOVE_CASTLING(move) ((move & 0x4000000) >> 26)
+
 
 
 typedef unsigned long long Bitboard;
@@ -40,7 +55,7 @@ enum
 };
 
 enum color {black, white, both};
-enum piece {w_pawn, w_knight, w_bishop, w_rook, w_queen, w_king, b_pawn, b_knight, b_bishop, b_rook, b_queen, b_king};
+enum piece {w_pawn, w_knight, w_bishop, w_rook, w_queen, w_king, b_pawn, b_knight, b_bishop, b_rook, b_queen, b_king, empty};
 enum file {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
 enum rank {RANK_8, RANK_7, RANK_6, RANK_5, RANK_4, RANK_3, RANK_2, RANK_1};
 enum castle {KC, QC, kc, qc};

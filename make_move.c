@@ -1,5 +1,3 @@
-//
-// Created by fedar on 7/29/2022.
-//
+#include "chess_types.h"
 
 
