@@ -39,7 +39,6 @@
 #define DECODE_MOVE_CASTLING(move) ((move & 0x4000000) >> 26)
 
 
-
 typedef unsigned long long Bitboard;
 
 enum

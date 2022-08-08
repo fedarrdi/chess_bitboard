@@ -17,12 +17,24 @@ Bitboard (*attack_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enem
                 black_pawn_attacks, knight_move, bishop_move, rook_move, queen_move, king_move
         };
 
+Bitboard (*move_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
+        {
+                white_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move,
+                black_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move
+        };
+
 int get_f1bit_index(Bitboard board)
 {
     for(int i = 0;i < 64;i++)
         if(GET_BIT(board, i)) return i;
     return -1;
 }
+
+Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
+{
+    return move_array[piece](pos, own_side, enemy_side, tbls);
+}
+
 
 Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
 {
