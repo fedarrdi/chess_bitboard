@@ -35,7 +35,6 @@ Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitbo
     return move_array[piece](pos, own_side, enemy_side, tbls);
 }
 
-
 Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
 {
     int start_index = side == white ? w_pawn : b_pawn;
@@ -179,7 +178,27 @@ void generate_position_moves(ChessBoard *board, enum color side, const LookupTab
                 if(!GET_BIT(board->occupied[side], b8) && !GET_BIT(board->occupied[side], c8) && !GET_BIT(board->occupied[side], d8)
                    && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
                     printf("Queen side castle\n");
+        }
+    }
+}
+
+void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
+{
+    return;
+}
+
+void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side)
+{
+    for(int i = 0;i < list->count;i++)
+    {
+        play_move(list->moves[i], board, tbls, side);
+        Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
+        Bitboard king_position = side == white ? board->pieces[w_king] : board->pieces[b_king];
+
+        if(king_position & enemy_attacks)
+        {/// this move is not valid 
 
         }
+
     }
 }

@@ -73,4 +73,10 @@ typedef struct bit_lookup_table
     Bitboard ClearRank[8], MaskRank[8], ClearFile[8], MaskFile[8];
 }LookupTable;
 
+struct move_list
+{
+    unsigned count;
+    int moves[256]; /// No need to bother making it dynamic because the maximum number of move lists in the recursion finding the best move will be the depth which can 't exceeds 20
+};
+
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

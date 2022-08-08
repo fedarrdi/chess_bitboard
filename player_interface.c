@@ -164,8 +164,8 @@ void player_make_move(ChessBoard *board, enum color side, const LookupTable *tbl
 
         for(int i = w_pawn; i <= b_king; i++)
             POP_BIT(board->pieces[i], to_square);
-
     }
+
     SET_BIT(board->occupied[both], to_square);
     SET_BIT(board->occupied[side], to_square);
     SET_BIT(board->pieces[piece], to_square);
