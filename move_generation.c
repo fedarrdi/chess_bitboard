@@ -55,7 +55,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const Lo
     }
     return attacks;
 }
-
+                        /// need to push moves in the move list 
 void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls)
 {
     printf( (side == white) ? ("              WHITE MOVES\n") : ("                BLACK MOVES\n"));
@@ -184,7 +184,53 @@ void generate_position_moves(ChessBoard *board, enum color side, const LookupTab
 
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
 {
-    return;
+    int from = DECODE_MOVE_FROM(move),
+        to = DECODE_MOVE_TO(move),
+        piece = DECODE_MOVE_PIECE(move),
+        prom_piece = DECODE_MOVE_PIECE(move),
+        capture_piece = DECODE_MOVE_CAPTURE(move),
+        double_pawn_push = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
+        enpassant = DECODE_MOVE_ENPASSANT(move),
+        castling = DECODE_MOVE_CASTLING(move);
+
+    POP_BIT(board->occupied[both], from);
+    POP_BIT(board->occupied[side], from);
+    POP_BIT(board->pieces[piece], from);
+
+    if(capture_piece)
+    {
+        POP_BIT(board->occupied[!side], to);
+        for(int i = w_pawn; i <= b_king; i++)
+            POP_BIT(board->pieces[i], to);
+    }
+
+    SET_BIT(board->occupied[both], to);
+    SET_BIT(board->occupied[side], to);
+    SET_BIT(board->pieces[piece], to);
+}
+
+void undo_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
+{
+    int from = DECODE_MOVE_FROM(move),
+        to = DECODE_MOVE_TO(move),
+        piece = DECODE_MOVE_PIECE(move),
+        prom_piece = DECODE_MOVE_PIECE(move),
+        capture_piece = DECODE_MOVE_CAPTURE(move),
+        double_pawn_push = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
+        enpassant = DECODE_MOVE_ENPASSANT(move),
+        castling = DECODE_MOVE_CASTLING(move);
+
+    POP_BIT(board->occupied[both], to);
+    POP_BIT(board->occupied[side], to);
+    POP_BIT(board->pieces[piece], to);
+
+    SET_BIT(board->occupied[both], from);
+    SET_BIT(board->occupied[side], from);
+    SET_BIT(board->pieces[piece], from);
+
+    SET_BIT(board->occupied[both], to);
+    SET_BIT(board->occupied[!side], to);
+    SET_BIT(board->pieces[capture_piece], to);
 }
 
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side)
@@ -196,9 +242,17 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         Bitboard king_position = side == white ? board->pieces[w_king] : board->pieces[b_king];
 
         if(king_position & enemy_attacks)
-        {/// this move is not valid 
+            list->moves[i] = 0;
 
-        }
-
+        undo_move(list->moves[i], board, tbls, side);
     }
+}
+
+void print_move(int move);
+
+void print_move_list(const struct move_list *list)
+{
+    for(int i = 0;i < list->count;i++)
+        if(list->moves[i])
+            print_move(list->moves[i]);
 }
