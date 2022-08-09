@@ -99,7 +99,6 @@ void generate_position_moves(struct move_list *empty_list, ChessBoard *board, en
                     {
                         if ((side == white && (1ULL << bit_index_to & tbls->MaskRank[RANK_8])))
                         {
-
                             printf("Pawn move: from %d -----> to %d promotion to white knight\n", bit_index_from, bit_index_to);
                             printf("Pawn move: from %d -----> to %d promotion to white bishop\n", bit_index_from, bit_index_to);
                             printf("Pawn move: from %d -----> to %d promotion to white rook\n", bit_index_from, bit_index_to);
@@ -179,7 +178,7 @@ void generate_position_moves(struct move_list *empty_list, ChessBoard *board, en
         }
     }
 }
-
+                /// play move undo move not ready
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
 {
     int from = DECODE_MOVE_FROM(move),

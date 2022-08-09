@@ -46,7 +46,6 @@ void print_chess_board(ChessBoard *board)
     printf("\n\n");
 }
 
-
 void print_move(int move)
 {
 
@@ -70,7 +69,6 @@ void print_move(int move)
     printf("MOVE is en passant: %d\n", DECODE_MOVE_ENPASSANT(move) ? 1 : 0);
     printf("MOVE is castle: %d\n", DECODE_MOVE_CASTLING(move) ? 1 : 0);
 }
-
 
 void player_make_move(ChessBoard *board, enum color side, const LookupTable *tbls)
 {
