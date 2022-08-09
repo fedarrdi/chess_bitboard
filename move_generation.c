@@ -55,11 +55,9 @@ Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const Lo
     }
     return attacks;
 }
-                        /// need to push moves in the move list 
-void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls)
+                        /// need to push moves in the move list
+void generate_position_moves(struct move_list *empty_list, ChessBoard *board, enum color side, const LookupTable *tbls)
 {
-    printf( (side == white) ? ("              WHITE MOVES\n") : ("                BLACK MOVES\n"));
-
     int start_index = side == white ? w_pawn : b_pawn;
     int end_index = side == white ? w_king : b_king;
     Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
