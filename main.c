@@ -8,6 +8,7 @@ void parse_FEN(const char *FEN, ChessBoard *board);
 void print_move(int move);
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
 void undo_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
+void generate_position_moves(ChessBoard *board, enum color side, const LookupTable *tbls);
 
 int main()
 {
@@ -15,7 +16,7 @@ int main()
     parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq", &board);
     LookupTable tbls = fill_lookup_table();
 
-    print_chess_board(&board);
+    /*print_chess_board(&board);
 
     int move = ENCODE_MOVE(d2, d3, w_pawn, 0, empty, 1, 1, 0);
 
@@ -23,7 +24,10 @@ int main()
     print_chess_board(&board);
 
     undo_move(move, &board, &tbls, white);
+    print_chess_board(&board);*/
+
     print_chess_board(&board);
+    generate_position_moves(&board, white, &tbls);
 
     return 0;
 }
