@@ -19,7 +19,7 @@
  */
 
 
-#define ENCODE_MOVE(from , to, piece, promoted_piece, capture, double_pawn_push, enpassant, castling) \
+#define ENCODE_MOVE(from, to, piece, promoted_piece, capture, double_pawn_push, enpassant, castling) \
 (from) | \
 ((to) << 6) | \
 ((piece) << 12) | \
@@ -38,7 +38,7 @@
 #define DECODE_MOVE_ENPASSANT(move) ((move & 0x2000000) >> 25)
 #define DECODE_MOVE_CASTLING(move) ((move & 0x4000000) >> 26)
 
-
+#define LIST_PUSH(list, move) list->moves[list->count++] = move
 typedef unsigned long long Bitboard;
 
 enum
