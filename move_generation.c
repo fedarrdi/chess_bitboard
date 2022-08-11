@@ -249,12 +249,8 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
     POP_BIT(board->occupied[side], from);
     POP_BIT(board->pieces[piece], from);
 
-    if(capture_piece)
-    {
-        POP_BIT(board->occupied[!side], to);
-        for(int i = w_pawn; i <= b_king; i++)
-            POP_BIT(board->pieces[i], to);
-    }
+    if(capture_piece != empty)
+         POP_BIT(board->pieces[capture_piece], to);
 
     SET_BIT(board->occupied[both], to);
     SET_BIT(board->occupied[side], to);
