@@ -6,14 +6,14 @@
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
 
 /*
-            MOVE FROM                  000 0000 0000 0000 0000 0011 1111
-            MOVE TO                    000 0000 0000 0000 1111 1100 0000
-            MOVE PIECE                 000 0000 0000 1111 0000 0000 0000
-            MOVE PROMOTION             000 0000 1111 0000 0000 0000 0000
-            MOVE CAPTURE               000 1111 0000 0000 0000 0000 0000
-            MOVE DOUBLE PUSH PAWN FLAG 001 0000 0000 0000 0000 0000 0000
-            MOVE EN PASSANT FLAG       010 0000 0000 0000 0000 0000 0000
-            MOVE CASTLING FLAG         100 0000 0000 0000 0000 0000 0000
+            MOVE FROM                  000 0000 0000 0000 0000 0011 1111 6
+            MOVE TO                    000 0000 0000 0000 1111 1100 0000 6
+            MOVE PIECE                 000 0000 0000 1111 0000 0000 0000 4
+            MOVE PROMOTION             000 0000 1111 0000 0000 0000 0000 4
+            MOVE CAPTURE               000 1111 0000 0000 0000 0000 0000 4
+            MOVE DOUBLE PUSH PAWN FLAG 001 0000 0000 0000 0000 0000 0000 1
+            MOVE EN PASSANT FLAG       010 0000 0000 0000 0000 0000 0000 1
+            MOVE CASTLING FLAG         100 0000 0000 0000 0000 0000 0000 1
 
                     THE MEMORY IS ROUNDED TO THAT OF AN INT
  */
@@ -25,18 +25,18 @@
 ((piece) << 12) | \
 ((promoted_piece << 16)) | \
 ((capture << 20)) | \
-((double_pawn_push << 21)) | \
-((enpassant) << 22) | \
-((castling) << 23)
+((double_pawn_push << 24)) | \
+((enpassant) << 25) | \
+((castling) << 26)
 
 #define DECODE_MOVE_FROM(move) (move & 0x3f)
 #define DECODE_MOVE_TO(move) ((move & 0xfc0) >> 6)
 #define DECODE_MOVE_PIECE(move) ((move & 0xf000) >> 12)
 #define DECODE_MOVE_PROMOTED_PIECE(move) ((move & 0xF0000) >> 16)
 #define DECODE_MOVE_CAPTURE(move) ((move & 0xF00000) >> 20)
-#define DECODE_MOVE_DOUBLE_PAWN_PUSH(move) ((move & 0x1000000) >> 24)
-#define DECODE_MOVE_ENPASSANT(move) ((move & 0x2000000) >> 25)
-#define DECODE_MOVE_CASTLING(move) ((move & 0x4000000) >> 26)
+#define DECODE_MOVE_DOUBLE_PAWN_PUSH(move) (move & 0x1000000)
+#define DECODE_MOVE_ENPASSANT(move) (move & 0x2000000)
+#define DECODE_MOVE_CASTLING(move) (move & 0x4000000)
 
 #define LIST_PUSH(list, move) list->moves[list->count++] = move
 typedef unsigned long long Bitboard;

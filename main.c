@@ -14,7 +14,7 @@ void print_move_list(const struct move_list *list);
 int main()
 {
     ChessBoard board;
-    parse_FEN("rn1qk2r/pb1pbppp/1p2pn2/8/2p5/PN1P1NPP/1PPBPPB1/R2QK2R b KQkq", &board);
+    parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq", &board);
     LookupTable tbls = fill_lookup_table();
     struct move_list list;
     list.count = 0;
