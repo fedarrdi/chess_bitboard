@@ -23,9 +23,9 @@
 (from) | \
 ((to) << 6) | \
 ((piece) << 12) | \
-((promoted_piece << 16)) | \
-((capture << 20)) | \
-((double_pawn_push << 24)) | \
+((promoted_piece) << 16) | \
+((capture) << 20) | \
+((double_pawn_push) << 24) | \
 ((enpassant) << 25) | \
 ((castling) << 26)
 

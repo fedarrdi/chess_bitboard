@@ -63,11 +63,14 @@ void print_move(int move)
     printf("MOVE from: %s\n", square_string[DECODE_MOVE_FROM(move)]);
     printf("MOVE to: %s\n", square_string[DECODE_MOVE_TO(move)]);
     printf("MOVE piece: %c\n", piece_to_symbol[DECODE_MOVE_PIECE(move)]);
-    DECODE_MOVE_PROMOTED_PIECE(move) != empty ?  printf("MOVE promoted piece: %c\n", piece_to_symbol[DECODE_MOVE_PROMOTED_PIECE(move)]) :  printf("MOVE promoted piece: NONE\n");
-    printf("MOVE capture piece: %d\n", piece_to_symbol[DECODE_MOVE_CAPTURE(move)]);
+    printf("MOVE promotion: %c\n", piece_to_symbol[DECODE_MOVE_PROMOTED_PIECE(move)]);
+    printf("MOVE capture piece: %c\n", piece_to_symbol[DECODE_MOVE_CAPTURE(move)]);
     printf("MOVE is double pawn push: %d\n", DECODE_MOVE_DOUBLE_PAWN_PUSH(move) ? 1 : 0);
     printf("MOVE is en passant: %d\n", DECODE_MOVE_ENPASSANT(move) ? 1 : 0);
     printf("MOVE is castle: %d\n", DECODE_MOVE_CASTLING(move) ? 1 : 0);
+
+    printf("\n MOVE VALUE: %d\n\n", move);
+
     printf("\n");
 }
 
