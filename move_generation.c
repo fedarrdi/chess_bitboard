@@ -1,5 +1,6 @@
 #include "chess_types.h"
 #include <stdio.h>
+#include <string.h>
 
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
@@ -260,34 +261,16 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
     SET_BIT(board->pieces[piece], to);
 }
 
-void undo_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
-{
-    int from = DECODE_MOVE_FROM(move),
-        to = DECODE_MOVE_TO(move),
-        piece = DECODE_MOVE_PIECE(move),
-        prom_piece = DECODE_MOVE_PIECE(move),
-        capture_piece = DECODE_MOVE_CAPTURE(move),
-        double_pawn_push = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
-        enpassant = DECODE_MOVE_ENPASSANT(move),
-        castling = DECODE_MOVE_CASTLING(move);
-
-    POP_BIT(board->occupied[both], to);
-    POP_BIT(board->occupied[side], to);
-    POP_BIT(board->pieces[piece], to);
-
-    SET_BIT(board->occupied[both], from);
-    SET_BIT(board->occupied[side], from);
-    SET_BIT(board->pieces[piece], from);
-
-    SET_BIT(board->occupied[both], to);
-    SET_BIT(board->occupied[!side], to);
-    SET_BIT(board->pieces[capture_piece], to);
-}
-
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side)
 {
     for(int i = 0;i < list->count;i++)
     {
+        Bitboard pieces[12];
+        Bitboard occupied[3];
+
+        memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
+        memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
+
         play_move(list->moves[i], board, tbls, side);
 
         Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
@@ -296,7 +279,8 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         if(king_position & enemy_attacks)
             list->moves[i] = 0;
 
-        undo_move(list->moves[i], board, tbls, side);
+        memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
+        memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
     }
 }
 
