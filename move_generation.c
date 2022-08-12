@@ -86,13 +86,19 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                 {
                     int bit_index_to = get_f1bit_index(pawn_moves);
                     POP_BIT(pawn_moves, bit_index_to);
-                    int capture_flag = 0, double_push_flag = 0, curr_move = 0;
+                    int double_push_flag = 0, curr_move = 0;
                     enum piece capture_piece = empty;
 
                     if(GET_BIT(board->occupied[!side], bit_index_to))
                     {
                         printf("Capture ");
-                        capture_flag = 1;
+
+                        for(int i = enemy_start_index; i <= enemy_end_index; i++)
+                            if(GET_BIT(board->pieces[i], bit_index_to))
+                            {
+                                capture_piece = i;
+                                break;
+                            }
                     }
 
                     if((side == white && (bit_index_from - 16) == bit_index_to) || (side == black && (bit_index_from + 16) == bit_index_to))
@@ -100,13 +106,6 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                         printf("Double ");
                         double_push_flag = 1;
                     }
-
-                    for(int i = enemy_start_index; i <= enemy_end_index; i++)
-                        if(GET_BIT(board->pieces[i], bit_index_to))
-                        {
-                            capture_piece = i;
-                            break;
-                        }
 
                     if ((side == white && (1ULL << bit_index_to & tbls->MaskRank[RANK_8])))
                     {
@@ -183,6 +182,20 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                 {
                     int bit_index_to = get_f1bit_index(piece_moves);
                     POP_BIT(piece_moves, bit_index_to);
+                    int curr_move = 0;
+                    enum piece capture_piece = empty;
+
+                    if(GET_BIT(board->occupied[!side], bit_index_to))
+                    {
+                        printf("Capture ");
+
+                        for(int i = enemy_start_index; i <= enemy_end_index; i++)
+                            if(GET_BIT(board->pieces[i], bit_index_to))
+                            {
+                                capture_piece = i;
+                                break;
+                            }
+                    }
 
                     if(piece_index == w_bishop || piece_index == b_bishop) printf("Bishop");
                     if(piece_index == w_knight || piece_index == b_knight) printf("Knight");
@@ -190,6 +203,9 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                     if(piece_index == w_queen || piece_index == b_queen) printf("Queen");
 
                     printf(" move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+
+                    curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, piece_index, empty, capture_piece, 0, 0, 0);
+                    LIST_PUSH(list, curr_move);
                 }
             }
         }
@@ -233,7 +249,7 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
         }
     }
 }
-                /// play move undo move not ready
+
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
 {
     int from = DECODE_MOVE_FROM(move),

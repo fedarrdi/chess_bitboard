@@ -16,7 +16,7 @@ void print_move(int move);
 int main()
 {
     ChessBoard board;
-    parse_FEN("8/8/8/8/4b3/7n/5PP1/7K w  ", &board);
+    parse_FEN("8/8/b7/8/8/8/4B3/5K2 w", &board);
     LookupTable tbls = fill_lookup_table();
     struct move_list list;
     list.count = 0;
