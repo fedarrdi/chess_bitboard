@@ -1,6 +1,7 @@
 #include "chess_types.h"
 #include <stdio.h>
 #include <string.h>
+void print_bitboard(Bitboard bitboard);
 
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
@@ -218,9 +219,28 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
             int bit_index_from = get_f1bit_index(copy_position);
             while(king_moves)
             {
+
                 int bit_index_to = get_f1bit_index(king_moves);
                 POP_BIT(king_moves, bit_index_to);
+                int curr_move = 0;
+                enum piece capture_piece = empty;
+
+                if(GET_BIT(board->occupied[!side], bit_index_to))
+                {
+                    printf("Capture ");
+
+                    for(int i = enemy_start_index; i <= enemy_end_index; i++)
+                        if(GET_BIT(board->pieces[i], bit_index_to))
+                        {
+                            capture_piece = i;
+                            break;
+                        }
+                }
+
                 printf("King move: from %d -----> to %d\n", bit_index_from, bit_index_to);
+                enum piece king = side == white ? w_king : b_king;
+                curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, king, empty, capture_piece, 0, 0, 0);
+                LIST_PUSH(list, curr_move);
             }
 
             if(side == white && board->castles[KC])
@@ -264,7 +284,7 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
     POP_BIT(board->occupied[both], from);
     POP_BIT(board->occupied[side], from);
     POP_BIT(board->pieces[piece], from);
-
+    POP_BIT(board->occupied[!side], to);
     if(capture_piece != empty)
          POP_BIT(board->pieces[capture_piece], to);
 
