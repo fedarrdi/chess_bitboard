@@ -1,22 +1,20 @@
 #include <stdio.h>
 #include "chess_types.h"
 
-void print_bitboard(Bitboard bitboard);
 LookupTable fill_lookup_table();
 void print_chess_board(ChessBoard *board);
 void parse_FEN(const char *FEN, ChessBoard *board);
 void print_move(int move);
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
-void undo_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
 void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls, struct move_list *list);
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side);
 void print_move_list(const struct move_list *list);
 void print_move(int move);
-/// Sieve moves check prevention doesn't work need to FIX!!!
+
 int main()
 {
     ChessBoard board;
-    parse_FEN("8/8/8/8/8/8/4nnn1/4nKn1 w", &board);
+    parse_FEN("r2qk2r/1Ppbbp1p/p1n2np1/1p1pp3/3P4/1PN1PN2/2PBBPPP/1R1QK2R w Kkq", &board);
     LookupTable tbls = fill_lookup_table();
     struct move_list list;
     list.count = 0;

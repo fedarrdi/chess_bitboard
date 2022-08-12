@@ -57,7 +57,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const Lo
     }
     return attacks;
 }
-
+            /// king castle and en passant
 void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls, struct move_list *list)
 {
     int start_index = side == white ? w_pawn : b_pawn,
@@ -285,6 +285,7 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
     POP_BIT(board->occupied[side], from);
     POP_BIT(board->pieces[piece], from);
     POP_BIT(board->occupied[!side], to);
+
     if(capture_piece != empty)
          POP_BIT(board->pieces[capture_piece], to);
 
