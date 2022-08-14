@@ -1,7 +1,6 @@
 #include "chess_types.h"
 #include <stdio.h>
 #include <string.h>
-void print_bitboard(Bitboard bitboard);
 
 Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
 Bitboard king_move(Bitboard king_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
@@ -57,7 +56,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const Lo
     }
     return attacks;
 }
-            /// king castle and en passant
+            ///  en passant
 void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls, struct move_list *list)
 {
     int start_index = side == white ? w_pawn : b_pawn,
@@ -215,14 +214,14 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
         {
             Bitboard king_incomplete_moves = king_move(copy_position, board->occupied[side], board->occupied[!side], tbls);
             Bitboard king_moves = king_incomplete_moves & ~enemy_attacks;
-
+            int curr_move = 0;
             int bit_index_from = get_f1bit_index(copy_position);
             while(king_moves)
             {
 
                 int bit_index_to = get_f1bit_index(king_moves);
                 POP_BIT(king_moves, bit_index_to);
-                int curr_move = 0;
+
                 enum piece capture_piece = empty;
 
                 if(GET_BIT(board->occupied[!side], bit_index_to))
@@ -236,28 +235,37 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                             break;
                         }
                 }
-
                 printf("King move: from %d -----> to %d\n", bit_index_from, bit_index_to);
                 enum piece king = side == white ? w_king : b_king;
                 curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, king, empty, capture_piece, 0, 0, 0);
                 LIST_PUSH(list, curr_move);
+                curr_move = 0;
             }
 
             if(side == white && board->castles[KC])
                 if(!GET_BIT(board->occupied[side], f1) && !GET_BIT(board->occupied[side], g1) && !((1ULL << f1) & enemy_attacks) &&  !((1ULL << g1) & enemy_attacks))
                 {
                     printf("King side castle\n");
+                    curr_move = ENCODE_MOVE(bit_index_from, bit_index_from + 2, w_king, empty, empty, 0, 0, 1);
+                    LIST_PUSH(list, curr_move);
+                    curr_move = 0;
                 }
             if(side == white && board->castles[QC])
                 if(!GET_BIT(board->occupied[side], b1) && !GET_BIT(board->occupied[side], c1) && !GET_BIT(board->occupied[side], d1)
                                                        && !((1ULL << c1) & enemy_attacks)        && !((1ULL << d1) & enemy_attacks))
                 {
                     printf("Queen side castle\n");
+                    curr_move = ENCODE_MOVE(bit_index_from, bit_index_from - 2, w_king, empty, empty, 0, 0, 1);
+                    LIST_PUSH(list, curr_move);
+                    curr_move = 0;
                 }
             if(side == black && board->castles[kc])
                 if(!GET_BIT(board->occupied[side], f8) && !GET_BIT(board->occupied[side], g8) && !((1ULL << f8) & enemy_attacks) &&  !((1ULL << g8) & enemy_attacks))
                 {
                     printf("King side castle\n");
+                    curr_move = ENCODE_MOVE(bit_index_from, bit_index_from + 2, b_king, empty, empty, 0, 0, 1);
+                    LIST_PUSH(list, curr_move);
+                    curr_move = 0;
                 }
 
             if(side == black && board->castles[qc])
@@ -265,6 +273,9 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
                    && !((1ULL << c8) & enemy_attacks)        && !((1ULL << d8) & enemy_attacks))
                 {
                     printf("Queen side castle\n");
+                    curr_move = ENCODE_MOVE(bit_index_from, bit_index_from - 2, b_king, empty, empty, 0, 0, 1);
+                    LIST_PUSH(list, curr_move);
+                    curr_move = 0;
                 }
         }
     }
@@ -277,9 +288,55 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
         piece = DECODE_MOVE_PIECE(move),
         prom_piece = DECODE_MOVE_PIECE(move),
         capture_piece = DECODE_MOVE_CAPTURE(move),
-        double_pawn_push = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
-        enpassant = DECODE_MOVE_ENPASSANT(move),
-        castling = DECODE_MOVE_CASTLING(move);
+        double_pawn_push_flag = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
+        enpassant_flag = DECODE_MOVE_ENPASSANT(move),
+        castling_flag = DECODE_MOVE_CASTLING(move);
+
+    if(prom_piece != empty)
+    {
+
+    }
+    /// move the rook and the king to the according positions
+    if(castling_flag)
+    {
+        if(side == white)
+        {
+                if(from < to)   /// king side castle
+                {
+                    POP_BIT(board->pieces[w_king], e1);
+                    POP_BIT(board->occupied[white], e1);
+                    POP_BIT(board->occupied[both], e1);
+
+                    POP_BIT(board->pieces[w_rook], h1);
+                    POP_BIT(board->occupied[white], h1);
+                    POP_BIT(board->occupied[both], h1);
+
+                    SET_BIT(board->pieces[w_king], g1);
+                    SET_BIT(board->occupied[white], g1);
+                    SET_BIT(board->occupied[both], g1);
+
+                    SET_BIT(board->pieces[w_rook], f1);
+                    SET_BIT(board->occupied[white], f1);
+                    SET_BIT(board->occupied[both], f1);
+                }
+                else if(from > to)   /// queen side castle
+                {
+
+                }
+        }
+
+        else if(side == black)
+        {
+            if(from < to) /// king side castle
+            {
+
+            }
+            else  if(from > to)  /// queen side castle
+            {
+
+            }
+        }
+    }
 
     POP_BIT(board->occupied[both], from);
     POP_BIT(board->occupied[side], from);

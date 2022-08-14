@@ -10,6 +10,7 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side);
 void print_move_list(const struct move_list *list);
 void print_move(int move);
+void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
 
 int main()
 {
@@ -29,11 +30,15 @@ int main()
     undo_move(move, &board, &tbls, white);
     print_chess_board(&board);*/
 
+    //print_chess_board(&board);
+    //generate_position_moves(&board, white, &tbls, &list);
+    //sieve_moves(&list, &board, &tbls, white);
+    //print_move_list(&list);
+
+    int move = ENCODE_MOVE(e1, g1, w_king, empty, empty, 0 ,0, 1);
+    print_move(move);
     print_chess_board(&board);
-    generate_position_moves(&board, white, &tbls, &list);
-    sieve_moves(&list, &board, &tbls, white);
-    print_move_list(&list);
-
-
+    play_move(move, &board, &tbls, white);
+    print_chess_board(&board);
     return 0;
 }

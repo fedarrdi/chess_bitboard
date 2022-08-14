@@ -71,7 +71,6 @@ void print_move(int move)
 
     printf("\n MOVE VALUE: %d\n\n", move);
 
-    printf("\n");
 }
 
 void player_make_move(ChessBoard *board, enum color side, const LookupTable *tbls)

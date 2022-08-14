@@ -71,7 +71,7 @@ typedef struct bit_chess_board
 typedef struct bit_lookup_table
 {
     Bitboard ClearRank[8], MaskRank[8], ClearFile[8], MaskFile[8];
-}LookupTable;
+} LookupTable;
 
 struct move_list
 {
