@@ -12,6 +12,13 @@ void print_move_list(const struct move_list *list);
 void print_move(int move);
 void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
 
+                /**
+                        LINKS: https://lichess.org/editor/r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R_w_KQkq_-_0_1?color=white
+                               https://www.youtube.com/watch?v=K0rp1vXV3Ek
+                               https://www.youtube.com/watch?v=cezEoX8WpWs&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs&index=25
+                 */
+
+                /// En passant need to be added
 int main()
 {
     ChessBoard board;

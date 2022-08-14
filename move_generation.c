@@ -307,12 +307,3 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
     }
 }
 
-void print_move(int move);
-
-void print_move_list(const struct move_list *list)
-{
-    printf("\n\n\n**************** Position moves ****************\n\n\n");
-    for(int i = 0;i < list->count;i++)
-        if(list->moves[i])
-            print_move(list->moves[i]);
-}
