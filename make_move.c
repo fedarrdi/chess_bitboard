@@ -1,3 +1,115 @@
 #include "chess_types.h"
 
 
+void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
+{
+    int from = DECODE_MOVE_FROM(move),
+            to = DECODE_MOVE_TO(move),
+            piece = DECODE_MOVE_PIECE(move),
+            prom_piece = DECODE_MOVE_PIECE(move),
+            capture_piece = DECODE_MOVE_CAPTURE(move),
+            double_pawn_push_flag = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
+            enpassant_flag = DECODE_MOVE_ENPASSANT(move),
+            castling_flag = DECODE_MOVE_CASTLING(move);
+
+    if (prom_piece != empty)
+    {
+
+    }
+    /// move the rook and the king to the according positions
+    if (castling_flag)
+    {
+        if (side == white)
+        {
+            if (from < to)   /// king side castle
+            {
+                POP_BIT(board->pieces[w_king], e1);
+                POP_BIT(board->occupied[white], e1);
+                POP_BIT(board->occupied[both], e1);
+
+                POP_BIT(board->pieces[w_rook], h1);
+                POP_BIT(board->occupied[white], h1);
+                POP_BIT(board->occupied[both], h1);
+
+                SET_BIT(board->pieces[w_king], g1);
+                SET_BIT(board->occupied[white], g1);
+                SET_BIT(board->occupied[both], g1);
+
+                SET_BIT(board->pieces[w_rook], f1);
+                SET_BIT(board->occupied[white], f1);
+                SET_BIT(board->occupied[both], f1);
+            }
+            else if (from > to)   /// queen side castle
+            {
+                POP_BIT(board->pieces[w_king], e1);
+                POP_BIT(board->occupied[white], e1);
+                POP_BIT(board->occupied[both], e1);
+
+                POP_BIT(board->pieces[w_rook], a1);
+                POP_BIT(board->occupied[white], a1);
+                POP_BIT(board->occupied[both], a1);
+
+                SET_BIT(board->pieces[w_king], c1);
+                SET_BIT(board->occupied[white], c1);
+                SET_BIT(board->occupied[both], c1);
+
+                SET_BIT(board->pieces[w_rook], d1);
+                SET_BIT(board->occupied[white], d1);
+                SET_BIT(board->occupied[both], d1);
+            }
+        }
+        else if (side == black)
+        {
+            if (from < to) /// king side castle
+            {
+                POP_BIT(board->pieces[b_king], e8);
+                POP_BIT(board->occupied[black], e8);
+                POP_BIT(board->occupied[both], e8);
+
+                POP_BIT(board->pieces[b_rook], h8);
+                POP_BIT(board->occupied[black], h8);
+                POP_BIT(board->occupied[both], h8);
+
+                SET_BIT(board->pieces[b_king], g8);
+                SET_BIT(board->occupied[black], g8);
+                SET_BIT(board->occupied[both], g8);
+
+                SET_BIT(board->pieces[b_rook], f8);
+                SET_BIT(board->occupied[black], f8);
+                SET_BIT(board->occupied[both], f8);
+            }
+            else if (from > to)  /// queen side castle
+            {
+                POP_BIT(board->pieces[b_king], e8);
+                POP_BIT(board->occupied[black], e8);
+                POP_BIT(board->occupied[both], e8);
+
+                POP_BIT(board->pieces[b_rook], a8);
+                POP_BIT(board->occupied[black], a8);
+                POP_BIT(board->occupied[both], a8);
+
+                SET_BIT(board->pieces[b_king], c8);
+                SET_BIT(board->occupied[black], c8);
+                SET_BIT(board->occupied[both], c8);
+
+                SET_BIT(board->pieces[b_rook], d8);
+                SET_BIT(board->occupied[black], d8);
+                SET_BIT(board->occupied[both], d8);
+            }
+        }
+    }
+    else
+    {
+        POP_BIT(board->occupied[both], from);
+        POP_BIT(board->occupied[side], from);
+        POP_BIT(board->pieces[piece], from);
+        POP_BIT(board->occupied[!side], to);
+
+        if (capture_piece != empty)
+            POP_BIT(board->pieces[capture_piece], to);
+
+        SET_BIT(board->occupied[both], to);
+        SET_BIT(board->occupied[side], to);
+        SET_BIT(board->pieces[piece], to);
+    }
+}

@@ -281,75 +281,8 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
     }
 }
 
-void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
-{
-    int from = DECODE_MOVE_FROM(move),
-        to = DECODE_MOVE_TO(move),
-        piece = DECODE_MOVE_PIECE(move),
-        prom_piece = DECODE_MOVE_PIECE(move),
-        capture_piece = DECODE_MOVE_CAPTURE(move),
-        double_pawn_push_flag = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
-        enpassant_flag = DECODE_MOVE_ENPASSANT(move),
-        castling_flag = DECODE_MOVE_CASTLING(move);
+void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
 
-    if(prom_piece != empty)
-    {
-
-    }
-    /// move the rook and the king to the according positions
-    if(castling_flag)
-    {
-        if(side == white)
-        {
-                if(from < to)   /// king side castle
-                {
-                    POP_BIT(board->pieces[w_king], e1);
-                    POP_BIT(board->occupied[white], e1);
-                    POP_BIT(board->occupied[both], e1);
-
-                    POP_BIT(board->pieces[w_rook], h1);
-                    POP_BIT(board->occupied[white], h1);
-                    POP_BIT(board->occupied[both], h1);
-
-                    SET_BIT(board->pieces[w_king], g1);
-                    SET_BIT(board->occupied[white], g1);
-                    SET_BIT(board->occupied[both], g1);
-
-                    SET_BIT(board->pieces[w_rook], f1);
-                    SET_BIT(board->occupied[white], f1);
-                    SET_BIT(board->occupied[both], f1);
-                }
-                else if(from > to)   /// queen side castle
-                {
-
-                }
-        }
-
-        else if(side == black)
-        {
-            if(from < to) /// king side castle
-            {
-
-            }
-            else  if(from > to)  /// queen side castle
-            {
-
-            }
-        }
-    }
-
-    POP_BIT(board->occupied[both], from);
-    POP_BIT(board->occupied[side], from);
-    POP_BIT(board->pieces[piece], from);
-    POP_BIT(board->occupied[!side], to);
-
-    if(capture_piece != empty)
-         POP_BIT(board->pieces[capture_piece], to);
-
-    SET_BIT(board->occupied[both], to);
-    SET_BIT(board->occupied[side], to);
-    SET_BIT(board->pieces[piece], to);
-}
 
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side)
 {

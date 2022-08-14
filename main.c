@@ -15,7 +15,7 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
 int main()
 {
     ChessBoard board;
-    parse_FEN("r2qk2r/1Ppbbp1p/p1n2np1/1p1pp3/3P4/1PN1PN2/2PBBPPP/1R1QK2R w Kkq", &board);
+    parse_FEN("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq", &board);
     LookupTable tbls = fill_lookup_table();
     struct move_list list;
     list.count = 0;
@@ -35,10 +35,10 @@ int main()
     //sieve_moves(&list, &board, &tbls, white);
     //print_move_list(&list);
 
-    int move = ENCODE_MOVE(e1, g1, w_king, empty, empty, 0 ,0, 1);
+    int move = ENCODE_MOVE(b2, b4, w_pawn, empty, empty, 1 ,0, 0);
     print_move(move);
     print_chess_board(&board);
-    play_move(move, &board, &tbls, white);
+    play_move(move, &board, &tbls, black);
     print_chess_board(&board);
     return 0;
 }
