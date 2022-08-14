@@ -12,10 +12,6 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
             enpassant_flag = DECODE_MOVE_ENPASSANT(move),
             castling_flag = DECODE_MOVE_CASTLING(move);
 
-    if (prom_piece != empty)
-    {
-
-    }
     /// move the rook and the king to the according positions
     if (castling_flag)
     {
@@ -111,5 +107,15 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
         SET_BIT(board->occupied[both], to);
         SET_BIT(board->occupied[side], to);
         SET_BIT(board->pieces[piece], to);
+
+
+        if (prom_piece != empty)
+        {
+            enum piece pawn = side == white ? w_pawn : b_pawn;
+
+            POP_BIT(board->pieces[pawn], to);
+            SET_BIT(board->pieces[prom_piece], to);
+        }
+
     }
 }
