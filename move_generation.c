@@ -36,10 +36,10 @@ Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitbo
     return move_array[piece](pos, own_side, enemy_side, tbls);
 }
 
-Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls)
+Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 {
-    int start_index = side == white ? w_pawn : b_pawn,
-        end_index = side == white ? w_king : b_king;
+    int start_index = board->turn == white ? w_pawn : b_pawn,
+        end_index = board->turn == white ? w_king : b_king;
 
     Bitboard attacks = 0;
 
@@ -51,20 +51,22 @@ Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const Lo
         {
             int bit_index = get_f1bit_index(copy_board);
             POP_BIT(copy_board, bit_index);
-            attacks |= attack_array[i](1ULL << bit_index, board->occupied[side], board->occupied[!side], tbls);
+            attacks |= attack_array[i](1ULL << bit_index, board->occupied[board->turn], board->occupied[!board->turn], tbls);
         }
     }
     return attacks;
 }
             ///  en passant
-void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls, struct move_list *list)
+void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, struct move_list *list)
 {
-    int start_index = side == white ? w_pawn : b_pawn,
-        end_index = side == white ? w_king : b_king,
-        enemy_start_index = side == white ? b_pawn : w_pawn,
-        enemy_end_index = side == white ? b_king : w_king;
+    int start_index = board->turn == white ? w_pawn : b_pawn,
+        end_index = board->turn == white ? w_king : b_king,
+        enemy_start_index = board->turn == white ? b_pawn : w_pawn,
+        enemy_end_index = board->turn == white ? b_king : w_king;
 
-    Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
+    enum color side = board->turn;
+
+    Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
 
     for (int piece_index = start_index; piece_index <= end_index; piece_index++)
     {
@@ -281,10 +283,10 @@ void generate_position_moves(const ChessBoard *board, enum color side, const Loo
     }
 }
 
-void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
+void play_move(int move, ChessBoard *board, const LookupTable *tbls);
 
 
-void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side)
+void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)
 {
     for(int i = 0;i < list->count;i++)
     {
@@ -294,10 +296,10 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list->moves[i], board, tbls, side);
+        play_move(list->moves[i], board, tbls);
 
-        Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
-        Bitboard king_position = side == white ? board->pieces[w_king] : board->pieces[b_king];
+        Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
+        Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];
 
         if(king_position & enemy_attacks)
             list->moves[i] = 0;

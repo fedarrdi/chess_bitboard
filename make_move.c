@@ -1,7 +1,7 @@
 #include "chess_types.h"
 
 
-void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side)
+void play_move(int move, ChessBoard *board, const LookupTable *tbls)
 {
     int from = DECODE_MOVE_FROM(move),
             to = DECODE_MOVE_TO(move),
@@ -12,12 +12,11 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
             enpassant_flag = DECODE_MOVE_ENPASSANT(move),
             castling_flag = DECODE_MOVE_CASTLING(move);
 
-    /// move the rook and the king to the according positions
-    if (castling_flag)
+   if (castling_flag)
     {
-        if (side == white)
+        if (board->turn == white)
         {
-            if (from < to)   /// king side castle
+            if (from < to)
             {
                 POP_BIT(board->pieces[w_king], e1);
                 POP_BIT(board->occupied[white], e1);
@@ -54,7 +53,7 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
                 SET_BIT(board->occupied[both], d1);
             }
         }
-        else if (side == black)
+        else if (board->turn == black)
         {
             if (from < to) /// king side castle
             {
@@ -97,21 +96,21 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color 
     else
     {
         POP_BIT(board->occupied[both], from);
-        POP_BIT(board->occupied[side], from);
+        POP_BIT(board->occupied[board->turn], from);
         POP_BIT(board->pieces[piece], from);
-        POP_BIT(board->occupied[!side], to);
+        POP_BIT(board->occupied[!board->turn], to);
 
         if (capture_piece != empty)
             POP_BIT(board->pieces[capture_piece], to);
 
         SET_BIT(board->occupied[both], to);
-        SET_BIT(board->occupied[side], to);
+        SET_BIT(board->occupied[board->turn], to);
         SET_BIT(board->pieces[piece], to);
 
 
         if (prom_piece != empty)
         {
-            enum piece pawn = side == white ? w_pawn : b_pawn;
+            enum piece pawn = board->turn == white ? w_pawn : b_pawn;
 
             POP_BIT(board->pieces[pawn], to);
             SET_BIT(board->pieces[prom_piece], to);

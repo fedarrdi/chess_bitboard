@@ -52,10 +52,12 @@ LookupTable fill_lookup_table()
     return tbls;
 }
 
-void parse_FEN(const char *FEN, ChessBoard *board)
+ChessBoard parse_FEN(const char *FEN)
 {
-    for(int i = 0;i < 3;board->occupied[i++] = 0);
-    for(int i = 0;i < 12;board->pieces[i++] = 0);
+    ChessBoard board;
+
+    for(int i = 0;i < 3;board.occupied[i++] = 0);
+    for(int i = 0;i < 12;board.pieces[i++] = 0);
 
     int board_index = 0, rank = 0, file = 0, n = strlen(FEN), i;
     for(i = 0;i < n;i++)
@@ -78,8 +80,6 @@ void parse_FEN(const char *FEN, ChessBoard *board)
             if(FEN[i] == 'R') board_index = w_rook;
             if(FEN[i] == 'Q') board_index = w_queen;
             if(FEN[i] == 'K') board_index = w_king;
-
-
         }
 
         if(FEN[i] >= 'a' && FEN[i] <= 'z')
@@ -98,31 +98,33 @@ void parse_FEN(const char *FEN, ChessBoard *board)
         }
 
         int square = rank * 8 + file;
-        SET_BIT(board->pieces[board_index], square);
+        SET_BIT(board.pieces[board_index], square);
         file++;
     }
-    board->occupied[black] = board->pieces[b_rook]   | board->pieces[b_knight] |
-                             board->pieces[b_bishop] | board->pieces[b_queen]  |
-                             board->pieces[b_king]   | board->pieces[b_pawn];
+    board.occupied[black] = board.pieces[b_rook]   | board.pieces[b_knight] |
+                             board.pieces[b_bishop] | board.pieces[b_queen]  |
+                             board.pieces[b_king]   | board.pieces[b_pawn];
 
-    board->occupied[white] = board->pieces[w_rook]   | board->pieces[w_knight] |
-                             board->pieces[w_bishop] | board->pieces[w_queen]  |
-                             board->pieces[w_king]   | board->pieces[w_pawn];
+    board.occupied[white] = board.pieces[w_rook]   | board.pieces[w_knight] |
+                             board.pieces[w_bishop] | board.pieces[w_queen]  |
+                             board.pieces[w_king]   | board.pieces[w_pawn];
 
-    board->occupied[both] = board->occupied[white] | board->occupied[black];
+    board.occupied[both] = board.occupied[white] | board.occupied[black];
 
 
     if(FEN[++i] == 'w')
-        board->turn = white;
+        board.turn = white;
     else if(FEN[i] == 'b')
-        board->turn = black;
+        board.turn = black;
 
     for(i+=2;i < n;i++)
     {
-        if(FEN[i] == 'K') board->castles[KC] = 1;
-        else if(FEN[i] == 'Q') board->castles[QC] = 1;
-        else if(FEN[i] == 'k') board->castles[kc] = 1;
-        else if(FEN[i] == 'q') board->castles[qc] = 1;
+        if(FEN[i] == 'K') board.castles[KC] = 1;
+        else if(FEN[i] == 'Q') board.castles[QC] = 1;
+        else if(FEN[i] == 'k') board.castles[kc] = 1;
+        else if(FEN[i] == 'q') board.castles[qc] = 1;
         else  break;
     }
+
+    return board;
 }

@@ -1,51 +1,35 @@
 #include <stdio.h>
 #include "chess_types.h"
 
+ChessBoard parse_FEN(const char *FEN);
 LookupTable fill_lookup_table();
 void print_chess_board(ChessBoard *board);
-void parse_FEN(const char *FEN, ChessBoard *board);
+enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, long long  *out_eval, int depth);
 void print_move(int move);
-void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
-void generate_position_moves(const ChessBoard *board, enum color side, const LookupTable *tbls, struct move_list *list);
-void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls, enum color side);
-void print_move_list(const struct move_list *list);
-void print_move(int move);
-void play_move(int move, ChessBoard *board, const LookupTable *tbls, enum color side);
+void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, struct move_list *list);
+void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls);
+enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, long long  *out_eval, int depth);
+void play_move(int move, ChessBoard *board, const LookupTable *tbls);
 
-                /**
-                        LINKS: https://lichess.org/editor/r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R_w_KQkq_-_0_1?color=white
-                               https://www.youtube.com/watch?v=K0rp1vXV3Ek
-                               https://www.youtube.com/watch?v=cezEoX8WpWs&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs&index=25
-                 */
 
-                /// En passant need to be added
 int main()
 {
-    ChessBoard board;
-    parse_FEN("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq", &board);
-    LookupTable tbls = fill_lookup_table();
     struct move_list list;
     list.count = 0;
 
-    /*print_chess_board(&board);
-
-    int move = ENCODE_MOVE(d2, d3, w_pawn, 0, empty, 1, 1, 0);
-
-    play_move(move, &board, &tbls, white);
+    ChessBoard board = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
+    LookupTable tbls = fill_lookup_table();
     print_chess_board(&board);
 
-    undo_move(move, &board, &tbls, white);
-    print_chess_board(&board);*/
+    long long eval;
+    int move;
+    if(min_max(&board, &tbls, &move, &eval, 0))
+    {
+        print_move(move);
+        play_move(move, &board, &tbls);
+    }
 
-    //print_chess_board(&board);
-    //generate_position_moves(&board, white, &tbls, &list);
-    //sieve_moves(&list, &board, &tbls, white);
-    //print_move_list(&list);
+    print_chess_board(&board);
 
-    int move = ENCODE_MOVE(b2, b4, w_pawn, empty, empty, 1 ,0, 0);
-    print_move(move);
-    print_chess_board(&board);
-    play_move(move, &board, &tbls, black);
-    print_chess_board(&board);
     return 0;
 }

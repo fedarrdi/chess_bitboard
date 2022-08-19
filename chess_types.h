@@ -58,6 +58,7 @@ enum piece {w_pawn, w_knight, w_bishop, w_rook, w_queen, w_king, b_pawn, b_knigh
 enum file {FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
 enum rank {RANK_8, RANK_7, RANK_6, RANK_5, RANK_4, RANK_3, RANK_2, RANK_1};
 enum castle {KC, QC, kc, qc};
+enum bool {false, true};
 
 typedef struct bit_chess_board
 {
