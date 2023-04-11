@@ -3,6 +3,7 @@
 #include <string.h>
 #include "piece_movement.h"
 #include "make_move.h"
+#include "init_functions.h"
 
 Bitboard (*attack_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
         {
@@ -43,13 +44,18 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
         {
             int bit_index = get_f1bit_index(copy_board);
             POP_BIT(copy_board, bit_index);
+
+            print_bitboard(board->occupied[board->turn]);
+            print_bitboard(board->occupied[!board->turn]);
+
             attacks |= attack_array[i](1ULL << bit_index, board->occupied[board->turn], board->occupied[!board->turn], tbls);
+            print_bitboard(attacks);
         }
     }
     return attacks;
 }
             ///  en passant
-void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, struct move_list *list)
+void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct move_list *list)
 {
     int start_index = board->turn == white ? w_pawn : b_pawn,
         end_index = board->turn == white ? w_king : b_king,
@@ -58,6 +64,7 @@ void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, s
 
     enum color side = board->turn;
 
+    board->turn = !board->turn;
     Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
 
     for (int piece_index = start_index; piece_index <= end_index; piece_index++)
@@ -237,7 +244,7 @@ void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, s
             }
 
             if(side == white && board->castles[KC])
-                if(!GET_BIT(board->occupied[side], f1) && !GET_BIT(board->occupied[side], g1) && !((1ULL << f1) & enemy_attacks) &&  !((1ULL << g1) & enemy_attacks))
+                if (!GET_BIT(board->occupied[side], f1) && !GET_BIT(board->occupied[side], g1) && !((1ULL << f1) & enemy_attacks) && !((1ULL << g1) & enemy_attacks))
                 {
                     printf("King side castle\n");
                     curr_move = ENCODE_MOVE(bit_index_from, bit_index_from + 2, w_king, empty, empty, 0, 0, 1);
@@ -245,8 +252,7 @@ void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, s
                     curr_move = 0;
                 }
             if(side == white && board->castles[QC])
-                if(!GET_BIT(board->occupied[side], b1) && !GET_BIT(board->occupied[side], c1) && !GET_BIT(board->occupied[side], d1)
-                                                       && !((1ULL << c1) & enemy_attacks)        && !((1ULL << d1) & enemy_attacks))
+                if(!GET_BIT(board->occupied[side], b1) && !GET_BIT(board->occupied[side], c1) && !GET_BIT(board->occupied[side], d1) && !((1ULL << c1) & enemy_attacks)        && !((1ULL << d1) & enemy_attacks))
                 {
                     printf("Queen side castle\n");
                     curr_move = ENCODE_MOVE(bit_index_from, bit_index_from - 2, w_king, empty, empty, 0, 0, 1);
