@@ -1,11 +1,9 @@
 #include "chess_types.h"
 #include <string.h>
 #include <stdio.h>
-
-void generate_position_moves(const ChessBoard *board, const LookupTable *tbls, struct move_list *list);
-void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls);
-void play_move(int move, ChessBoard *board, const LookupTable *tbls);
-long long evaluate_position(const ChessBoard *board);
+#include "move_generation.h"
+#include "evalute_position.h"
+#include "make_move.h"
 
 enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, long long  *out_eval, int depth)
 {
@@ -17,7 +15,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, lon
     sieve_moves(&list, board, tbls);
 
     int best_move = -1;
-    long long curr_eval, best_eval = evaluate_position(board);
+    long long curr_eval, best_eval = evaluate_position(board, list.count, tbls);
 
     for(int move_index = 0; move_index < list.count; move_index ++)
     {
@@ -29,7 +27,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, lon
         play_move(list.moves[move_index], board, tbls);
 
         ///calculate new position evaluation
-        curr_eval = evaluate_position(board);
+        curr_eval = evaluate_position(board, list.count, tbls);
 
         /// going one depth further
         if(depth)

@@ -80,4 +80,7 @@ struct move_list
     int moves[256]; /// No need to bother making it dynamic because the maximum number of move lists in the recursion finding the best move will be the depth which can 't exceeds 20
 };
 
+#define MAX_LL 9223372036854775807
+
+
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

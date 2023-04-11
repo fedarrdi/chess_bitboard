@@ -1,8 +1,6 @@
 #include "chess_types.h"
 #include <stdio.h>
-
-Bitboard generate_all_attacks(const ChessBoard *board, enum color side, const LookupTable *tbls);
-Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls);
+#include "move_generation.h"
 
 void print_chess_board(ChessBoard *board)
 {
@@ -171,7 +169,7 @@ void player_make_move(ChessBoard *board, enum color side, const LookupTable *tbl
     SET_BIT(board->occupied[side], to_square);
     SET_BIT(board->pieces[piece], to_square);
 
-    Bitboard enemy_attacks = generate_all_attacks(board, !side, tbls);
+    Bitboard enemy_attacks = generate_all_attacks(board, tbls);
 
     int king_index = side == white ? w_king : b_king;
     if(enemy_attacks & board->pieces[king_index])
