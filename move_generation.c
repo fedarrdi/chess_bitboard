@@ -5,13 +5,13 @@
 #include "make_move.h"
 #include "init_functions.h"
 
-Bitboard (*attack_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
+Bitboard (*attack_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
         {
                 white_pawn_attacks, knight_move, bishop_move, rook_move, queen_move, king_move,
                 black_pawn_attacks, knight_move, bishop_move, rook_move, queen_move, king_move
         };
 
-Bitboard (*move_array[12])(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
+Bitboard (*move_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
         {
                 white_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move,
                 black_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move
@@ -75,15 +75,14 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                 POP_BIT(copy_position, bit_index_from);
 
                 Bitboard pawn_moves = (side == white)
-                                      ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls)
-                                      : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side], tbls);
-
+                                      ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] & board->en_passant[side], tbls)
+                                      : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] & board->en_passant[side], tbls);
 
                 while(pawn_moves)
                 {
                     int bit_index_to = get_f1bit_index(pawn_moves);
                     POP_BIT(pawn_moves, bit_index_to);
-                    int double_push_flag = 0, curr_move = 0;
+                    int double_push_flag = 0, en_passant_flag = 0, curr_move = 0;
                     enum piece capture_piece = empty;
 
                     if(GET_BIT(board->occupied[!side], bit_index_to))
@@ -96,6 +95,12 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                                 capture_piece = i;
                                 break;
                             }
+                    }
+
+                    if(1ULL << bit_index_to & board->castles[side])
+                    {
+                        printf("En passant ");
+                        en_passant_flag = 1;
                     }
 
                     if((side == white && (bit_index_from - 16) == bit_index_to) || (side == black && (bit_index_from + 16) == bit_index_to))
@@ -135,7 +140,6 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                         printf("Pawn move: from %d -----> to %d promotion to black rook\n", bit_index_from, bit_index_to);
                         printf("Pawn move: from %d -----> to %d promotion to black queen\n", bit_index_from, bit_index_to);
 
-
                         curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, b_pawn, b_knight, capture_piece, double_push_flag, 0, 0);
                         LIST_PUSH(list, curr_move);
                         curr_move = 0;
@@ -158,7 +162,7 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                         printf("Pawn move: from %d -----> to %d\n", bit_index_from, bit_index_to);
 
                         enum piece pawn = side == white ? w_pawn : b_pawn;
-                        curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, pawn, empty, capture_piece, double_push_flag, 0, 0);
+                        curr_move = ENCODE_MOVE(bit_index_from, bit_index_to, pawn, empty, capture_piece, double_push_flag, en_passant_flag, 0);
                         LIST_PUSH(list, curr_move);
                         curr_move = 0;
                     }

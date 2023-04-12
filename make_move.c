@@ -1,8 +1,10 @@
 #include "chess_types.h"
 
-
+/// need to change board turn after every move
 void play_move(int move, ChessBoard *board, const LookupTable *tbls)
 {
+    board->en_passant[board->turn] = 0;
+
     int from = DECODE_MOVE_FROM(move),
             to = DECODE_MOVE_TO(move),
             piece = DECODE_MOVE_PIECE(move),
@@ -92,6 +94,10 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls)
                 SET_BIT(board->occupied[both], d8);
             }
         }
+    }
+    if(double_pawn_push_flag)
+    {
+        board->en_passant[!board->turn] |= (board->turn == white) ? (1ULL << from) << 8 :  (1ULL << from) >> 8;
     }
     else
     {

@@ -65,6 +65,7 @@ typedef struct bit_chess_board
     Bitboard occupied[3];///by white by black by both
     /// index w_pawn, w_knight, w_bishop, w_queen, w_rook, w_king, b_pawn, b_knight, b_bishop, b_queen, b_rook, b_king
     Bitboard pieces[12];///every piece bitboard
+    Bitboard en_passant[2]; /// 1 - for the places where white can take with en passant and 0 - for black
     char castles[4];/// white king side castle; wide queen side castle; black king side castle; black queen side castle
     enum color turn;///who moves in this position
 } ChessBoard;
@@ -77,7 +78,7 @@ typedef struct bit_lookup_table
 struct move_list
 {
     unsigned count;
-    int moves[256]; /// No need to bother making it dynamic because the maximum number of move lists in the recursion finding the best move will be the depth which can 't exceeds 20
+    int moves[256];
 };
 
 #define MAX_LL 9223372036854775807

@@ -111,6 +111,7 @@ ChessBoard parse_FEN(const char *FEN)
 
     board.occupied[both] = board.occupied[white] | board.occupied[black];
 
+    board.en_passant[0] = board.en_passant[1] = 0;
 
     if(FEN[++i] == 'w')
         board.turn = white;

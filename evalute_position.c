@@ -14,7 +14,7 @@ unsigned count_number_bits(Bitboard number)
         cnt += number & (1 << pos);
     return cnt;
 }
-
+  
 long long eval_pawns(const ChessBoard *board, const LookupTable *tbls)
 {
     Bitboard pawn_board = board->turn == white ? board->pieces[w_pawn] : board->pieces[b_pawn];

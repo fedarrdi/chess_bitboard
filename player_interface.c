@@ -71,8 +71,10 @@ void print_move(int move)
 
 }
 
-void player_make_move(ChessBoard *board, enum color side, const LookupTable *tbls)
+void player_make_move(ChessBoard *board, const LookupTable *tbls)
 {
+    enum color side = board->turn;
+
     int rank;
     char file;
 
