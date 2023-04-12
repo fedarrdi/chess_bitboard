@@ -2,7 +2,7 @@
 #include "move_generation.h"
 
 /// zobrist hash board to check if current position had been seen 3 times then the game results in pat;
-long long check_for_pat(const ChessBoard *board, int curr_legal_move_count)
+long long check_for_path(const ChessBoard *board, int curr_legal_move_count)
 {
     return !!curr_legal_move_count;
 }
@@ -45,5 +45,5 @@ long long evaluate_position(ChessBoard *board, int curr_legal_move_count, const 
 
     evaluation += eval_pawns(board, tbls) + check_for_mate(board, tbls, curr_legal_move_count);
 
-    return evaluation * check_for_pat(board, curr_legal_move_count);
+    return evaluation * check_for_path(board, curr_legal_move_count);
 }

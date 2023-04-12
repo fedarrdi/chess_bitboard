@@ -16,8 +16,9 @@ int main()
     ChessBoard board = parse_FEN("r2qkb1r/pp2nppp/3p4/2pNN1B1/2BnP3/3P4/PPP2PPP/R2bK2R w KQkq");
     LookupTable tbls = fill_lookup_table();
     print_chess_board(&board);
+    generate_position_moves(&board, &tbls, &list);
 
-    long long eval;
+    /*long long eval;
     int move;
 
     if(min_max(&board, &tbls, &move, &eval, 0))
@@ -26,7 +27,7 @@ int main()
         play_move(move, &board, &tbls);
     }
 
-    print_chess_board(&board);
+    print_chess_board(&board);*/
 
     return 0;
 }

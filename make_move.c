@@ -12,7 +12,7 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls)
             enpassant_flag = DECODE_MOVE_ENPASSANT(move),
             castling_flag = DECODE_MOVE_CASTLING(move);
 
-   if (castling_flag)
+    if (castling_flag)
     {
         if (board->turn == white)
         {
