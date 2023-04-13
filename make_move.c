@@ -99,6 +99,24 @@ void play_move(int move, ChessBoard *board, const LookupTable *tbls)
     {
         board->en_passant[!board->turn] |= (board->turn == white) ? (1ULL << from) << 8 :  (1ULL << from) >> 8;
     }
+    if(enpassant_flag)
+    {
+        POP_BIT(board->occupied[both], from);
+        POP_BIT(board->occupied[board->turn], from);
+        POP_BIT(board->pieces[piece], from);
+
+        int capture = (board->turn == white) ? to + 8 : to - 8;
+        enum piece capture_pawn = (board->turn == white) ? b_pawn : w_pawn;
+
+        POP_BIT(board->occupied[both], capture);
+        POP_BIT(board->occupied[!board->turn], capture);
+        POP_BIT(board->pieces[capture_pawn], from);
+
+        SET_BIT(board->occupied[both], to);
+        SET_BIT(board->occupied[board->turn], to);
+        SET_BIT(board->pieces[piece], to);
+
+    }
     else
     {
         POP_BIT(board->occupied[both], from);

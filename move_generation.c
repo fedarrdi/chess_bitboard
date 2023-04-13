@@ -75,8 +75,8 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                 POP_BIT(copy_position, bit_index_from);
 
                 Bitboard pawn_moves = (side == white)
-                                      ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] & board->en_passant[side], tbls)
-                                      : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] & board->en_passant[side], tbls);
+                                      ? white_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] | board->en_passant[side], tbls)
+                                      : black_pawn_move(1ULL << bit_index_from, board->occupied[side], board->occupied[!side] | board->en_passant[side], tbls);
 
                 while(pawn_moves)
                 {
@@ -97,7 +97,7 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
                             }
                     }
 
-                    if(1ULL << bit_index_to & board->castles[side])
+                    if((1ULL << bit_index_to) & board->en_passant[side])
                     {
                         printf("En passant ");
                         en_passant_flag = 1;

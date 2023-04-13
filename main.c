@@ -13,12 +13,11 @@ int main()
     struct move_list list;
     list.count = 0;
 
-    ChessBoard board = parse_FEN("r2qkb1r/pp2nppp/3p4/2pNN1B1/2BnP3/3P4/PPP2PPP/R2bK2R w KQkq");
+    ChessBoard board = parse_FEN("8/8/8/3Pp3/8/8/8/8 w 0000 e6");
     LookupTable tbls = fill_lookup_table();
     print_chess_board(&board);
-    player_make_move(&board, &tbls);
 
-    //generate_position_moves(&board, &tbls, &list);
+    generate_position_moves(&board, &tbls, &list);
 
     /*long long eval;
     int move;

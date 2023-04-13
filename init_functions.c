@@ -118,14 +118,23 @@ ChessBoard parse_FEN(const char *FEN)
     else if(FEN[i] == 'b')
         board.turn = black;
 
-    for(i+=2;i < n;i++)
+    for(int p = 0;p < 4;p++)
+        board.castles[p] = 0;
+
+    int j = 0;
+    for(i+=2;j < 4;i++, j++)
     {
         if(FEN[i] == 'K') board.castles[KC] = 1;
         else if(FEN[i] == 'Q') board.castles[QC] = 1;
         else if(FEN[i] == 'k') board.castles[kc] = 1;
         else if(FEN[i] == 'q') board.castles[qc] = 1;
-        else  break;
     }
 
+    i++;
+
+    int f = FEN[i++] - 'a', r = 8 - (FEN[i] - '0');
+
+    board.en_passant[board.turn] = 1ULL << (r * 8 + f);
+    board.en_passant[!board.turn] = 0;
     return board;
 }
