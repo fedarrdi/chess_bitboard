@@ -24,7 +24,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, lon
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list.moves[move_index], board, tbls);
+        play_move(list.moves[move_index], board);
 
         ///calculate new position evaluation
         curr_eval = evaluate_position(board, list.count, tbls);

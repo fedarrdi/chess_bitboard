@@ -49,7 +49,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
     }
     return attacks;
 }
-///  en passant
+
 void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct move_list *list)
 {
     int start_index = board->turn == white ? w_pawn : b_pawn,
@@ -295,7 +295,7 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list->moves[i], board, tbls);
+        play_move(list->moves[i], board);
 
         Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
         Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];

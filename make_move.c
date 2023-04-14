@@ -1,7 +1,7 @@
 #include "chess_types.h"
 
 /// need to change board turn after every move
-void play_move(int move, ChessBoard *board, const LookupTable *tbls)
+void play_move(int move, ChessBoard *board)
 {
     board->en_passant[board->turn] = 0;
 
