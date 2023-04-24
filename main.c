@@ -7,28 +7,21 @@
 #include "move_generation.h"
 #include "piece_movement.h"
 #include "player_interface.h"
+#include "zobrist_hashing.h"
 
 int main()
 {
-    struct move_list list;
+    MoveList list;
     list.count = 0;
 
-    ChessBoard board = parse_FEN("8/8/8/3Pp3/8/8/8/8 w 0000 e6");
+    ChessBoard board = parse_FEN("rnbqkbnr/pppp1pp1/7p/3Pp3/8/8/PPP1PPPP/RNBQKBNR w KQkq e6");
     LookupTable tbls = fill_lookup_table();
+    Keys keys = init_random_keys();
+
     print_chess_board(&board);
-
+    Bitboard hash = get_bord_hash(&board, &keys);
+    printf("%llu\n", hash);
     generate_position_moves(&board, &tbls, &list);
-
-    /*long long eval;
-    int move;
-
-    if(min_max(&board, &tbls, &move, &eval, 0))
-    {
-        print_move(move);
-        play_move(move, &board, &tbls);
-    }
-
-    print_chess_board(&board);*/
 
     return 0;
 }

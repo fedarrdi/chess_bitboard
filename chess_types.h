@@ -1,6 +1,8 @@
 #ifndef CHESS_BIT_BOARDS_CHESS_TYPES_H
 #define CHESS_BIT_BOARDS_CHESS_TYPES_H
 
+#define MAX_LL 9223372036854775807
+
 #define GET_BIT(bitboard, square) (bitboard & (1ULL << square))
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
@@ -40,6 +42,7 @@
 
 #define LIST_PUSH(list, move) list->moves[list->count++] = move
 typedef unsigned long long Bitboard;
+typedef unsigned long long Board_hash;
 
 enum
 {
@@ -75,13 +78,19 @@ typedef struct bit_lookup_table
     Bitboard ClearRank[8], MaskRank[8], ClearFile[8], MaskFile[8];
 } LookupTable;
 
-struct move_list
+typedef struct move_list
 {
     unsigned count;
     int moves[256];
-};
+} MoveList;
 
-#define MAX_LL 9223372036854775807
+typedef struct random_keys
+{
+    Bitboard piece[12][64]; ///piece count, square count
+    Bitboard castle[16]; /// in total 4 possibles castles 2^4 = 16
+    Bitboard enpassant[64]; /// enpassant is not possible in every square
+    Bitboard side;
+} Keys;
 
 
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

@@ -17,7 +17,7 @@ Bitboard (*move_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side,
                 black_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move
         };
 
-int get_f1bit_index(Bitboard board)
+int get_f1bit_index(Bitboard board) /// need to be faster
 {
     for(int i = 0;i < 64;i++)
         if(GET_BIT(board, i)) return i;
