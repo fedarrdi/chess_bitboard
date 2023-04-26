@@ -5,7 +5,7 @@
 #include "evalute_position.h"
 #include "make_move.h"
 
-enum bool min_max(ChessBoard *board, const LookupTable *tbls, int *out_move, long long  *out_eval, int depth)
+enum bool min_max(ChessBoard *board, LookupTable *tbls, int *out_move, long long  *out_eval, int depth)
 {
     struct move_list list;
     list.count = 0;

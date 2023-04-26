@@ -1,8 +1,6 @@
 #ifndef CHESS_BIT_BOARDS_CHESS_TYPES_H
 #define CHESS_BIT_BOARDS_CHESS_TYPES_H
 
-#define MAX_LL 9223372036854775807
-
 #define GET_BIT(bitboard, square) (bitboard & (1ULL << square))
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )
@@ -91,6 +89,13 @@ typedef struct random_keys
     Bitboard enpassant[64]; /// enpassant is not possible in every square
     Bitboard side;
 } Keys;
+
+typedef struct position_array
+{
+
+    char *hashed_position_arr_1, *hashed_position_arr_2; /// how many times each position has been reached, at start 0
+    int different_positions;
+} Positions;
 
 
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

@@ -1,6 +1,9 @@
 #include "chess_types.h"
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
+#include <limits.h>
+
 
 void print_bitboard(Bitboard bitboard)
 {
@@ -26,7 +29,7 @@ LookupTable fill_lookup_table()
     LookupTable tbls;
     for(int i = 0;i < 8;i++)
     {
-        tbls.ClearRank[i] = tbls.ClearFile[i] = (Bitboard)~0;
+        tbls.ClearRank[i] = tbls.ClearFile[i] = ~(Bitboard)0;
         tbls.MaskRank[i] = tbls.MaskFile[i] = 0;
     }
 
@@ -138,3 +141,17 @@ ChessBoard parse_FEN(const char *FEN)
     board.en_passant[!board.turn] = 0;
     return board;
 }
+
+
+Positions init_position_arr()
+{
+    Positions positions;
+    positions.hashed_position_arr_1 = malloc();
+    if(!positions.hashed_position_arr_1)
+    {
+        exit(1);
+    }
+    return positions;
+}
+//9223372036854775807
+//18446744073709551615
