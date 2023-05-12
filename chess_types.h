@@ -1,6 +1,8 @@
 #ifndef CHESS_BIT_BOARDS_CHESS_TYPES_H
 #define CHESS_BIT_BOARDS_CHESS_TYPES_H
 
+#define CHECK_MATE_V 9999999999
+
 #define GET_BIT(bitboard, square) (bitboard & (1ULL << square))
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
 #define POP_BIT(bitboard, square) ( GET_BIT(bitboard, square) ? (bitboard ^= (1ULL << square)) : 0 )

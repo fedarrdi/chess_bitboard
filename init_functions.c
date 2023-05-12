@@ -141,17 +141,3 @@ ChessBoard parse_FEN(const char *FEN)
     board.en_passant[!board.turn] = 0;
     return board;
 }
-
-
-Positions init_position_arr()
-{
-    Positions positions;
-    positions.hashed_position_arr_1 = malloc();
-    if(!positions.hashed_position_arr_1)
-    {
-        exit(1);
-    }
-    return positions;
-}
-//9223372036854775807
-//18446744073709551615

@@ -284,6 +284,12 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
     }
 }
 
+enum bool is_king_checked(ChessBoard *board, const LookupTable *tbls)
+{
+    Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
+    Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];
+    return king_position & enemy_attacks;
+}
 
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)
 {
@@ -297,11 +303,11 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
 
         play_move(list->moves[i], board);
 
-        Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
-        Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];
-
-        if(king_position & enemy_attacks)
+        if(is_king_checked(board, tbls))
+        {
+            list->count --;
             list->moves[i] = 0;
+        }
 
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);

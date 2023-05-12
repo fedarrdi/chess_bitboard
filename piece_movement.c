@@ -33,7 +33,7 @@ Bitboard knight_move(Bitboard knight_pos, Bitboard own_side, Bitboard enemy_side
 Bitboard white_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard white_pawn_left_attack = (pawn_pos >> 9) & tbls->ClearFile[FILE_H] & enemy_side,
-             white_pawn_right_attack = (pawn_pos >> 7) & tbls->ClearFile[FILE_A] & enemy_side;
+            white_pawn_right_attack = (pawn_pos >> 7) & tbls->ClearFile[FILE_A] & enemy_side;
     return white_pawn_left_attack | white_pawn_right_attack;
 }
 
@@ -49,7 +49,7 @@ Bitboard white_pawn_move(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_si
 Bitboard black_pawn_attacks(Bitboard pawn_pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
 {
     Bitboard black_pawn_left_attack = (pawn_pos << 9) & tbls->ClearFile[FILE_A] & enemy_side,
-             black_pawn_right_attack = (pawn_pos << 7) & tbls->ClearFile[FILE_H] & enemy_side;
+            black_pawn_right_attack = (pawn_pos << 7) & tbls->ClearFile[FILE_H] & enemy_side;
     return black_pawn_left_attack | black_pawn_right_attack;
 }
 
@@ -153,7 +153,3 @@ Bitboard queen_move(Bitboard queen_pos, Bitboard own_side, Bitboard enemy_side, 
 {
     return bishop_move(queen_pos, own_side, enemy_side, tbls) | rook_move(queen_pos, own_side, enemy_side, tbls);
 }
-
-
-
-
