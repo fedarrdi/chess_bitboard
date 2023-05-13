@@ -141,3 +141,13 @@ ChessBoard parse_FEN(const char *FEN)
     board.en_passant[!board.turn] = 0;
     return board;
 }
+
+MoveList init_move_list()
+{
+    MoveList list;
+    list.count = 0;
+    for(int i = 0;i < 256;i++)
+        list.moves[i] = 0;
+
+    return list;
+}

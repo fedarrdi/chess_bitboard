@@ -36,17 +36,17 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 
     Bitboard attacks = 0;
 
-    for(int i = start_index;i <= end_index; i++)
-    {
+    for(int i = start_index;i <= end_index; i++) {
         Bitboard copy_board = board->pieces[i];
 
-        while(copy_board)
+        while (copy_board)
         {
             int bit_index = get_f1bit_index(copy_board);
             POP_BIT(copy_board, bit_index);
             attacks |= attack_array[i](1ULL << bit_index, board->occupied[board->turn], board->occupied[!board->turn], tbls);
         }
     }
+
     return attacks;
 }
 
@@ -286,13 +286,16 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
 
 enum bool is_king_checked(ChessBoard *board, const LookupTable *tbls)
 {
+    board->turn = !board->turn;
     Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
+    board->turn = !board->turn;
     Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];
     return king_position & enemy_attacks;
 }
 
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)
 {
+    unsigned new_list_count = list->count;
     for(int i = 0;i < list->count;i++)
     {
         Bitboard pieces[12];
@@ -305,11 +308,12 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
 
         if(is_king_checked(board, tbls))
         {
-            list->count --;
+            new_list_count--;
             list->moves[i] = 0;
         }
 
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
     }
+    list->count = new_list_count;
 }

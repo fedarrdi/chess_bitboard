@@ -14,12 +14,11 @@
 int main()
 {
 
-    MoveList list;
-    list.count = 0;
-
-    ChessBoard board = parse_FEN("rnbqkbnr/1pppp2p/p4p2/6p1/8/4P3/PPPPBPPP/RNBQK1NR w KQkq");
+    MoveList list = init_move_list();
+    ChessBoard board = parse_FEN("rnbqkbnr/ppppp2p/5p2/6p1/8/4P3/PPPPBPPP/RNBQK1NR w KQkq");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
+
 
     int out_move = -1;
     long long out_eval = -1;
