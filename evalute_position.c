@@ -10,14 +10,11 @@ long long check_for_path(ChessBoard *board, Board_hash hash_key, int curr_legal_
 
 long long check_for_mate(ChessBoard *board, const LookupTable *tbls, unsigned curr_legal_moves_count)
 {
-    board->turn = !board->turn;
     if(!curr_legal_moves_count && is_king_checked(board, tbls))
     {
-        board->turn = !board->turn;
-        return CHECK_MATE_V * ( (board->turn == white) ? (1) : (-1) );
+        return CHECK_MATE_V * ( (board->turn == white) ? (-1) : (1) ); /// if white are mate then black wins
     }
 
-    board->turn = !board->turn;
     return 0;
 }
 

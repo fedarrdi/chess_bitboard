@@ -15,7 +15,7 @@ int main()
 {
 
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("rnbqkbnr/ppppp2p/5p2/6p1/8/4P3/PPPPBPPP/RNBQK1NR w KQkq");
+    ChessBoard board = parse_FEN("rnbqkbnr/ppppp2p/5p2/6p1/8/8/4B3/8 w kq");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
@@ -27,12 +27,6 @@ int main()
         print_chess_board(&board);
         print_move(out_move);
     }
-
-   /* print_chess_board(&board);
-    Bitboard hash = get_bord_hash(&board, &keys);
-    printf("%llu\n", hash);
-    generate_position_moves(&board, &tbls, &list);*/
-
 
     return 0;
 }

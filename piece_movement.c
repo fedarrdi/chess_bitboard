@@ -99,7 +99,7 @@ Bitboard bishop_move(Bitboard bishop_pos, Bitboard own_side, Bitboard enemy_side
     for(Bitboard curr_move = bishop_pos;curr_move;)
     {
         curr_move >>= 7;
-        curr_move &= tbls->ClearFile[FILE_H];
+        curr_move &= tbls->ClearFile[FILE_A];
         curr_move &= ~own_side;
         moves |= curr_move;
         if(curr_move & enemy_side) break;
