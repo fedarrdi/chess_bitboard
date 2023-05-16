@@ -15,18 +15,33 @@ int main()
 {
 
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("rnbqkbnr/ppppp2p/5p2/6p1/8/8/4B3/8 w kq");
+    ChessBoard board = parse_FEN("8/8/8/3k4/7R/Q7/PP5B/KP6 w");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
 
-    int out_move = -1;
-    long long out_eval = -1;
-    if(min_max(&board, &tbls, &keys, &out_move, &out_eval, 2))
+
+    for(enum color turn = white; true ; turn = !turn)
     {
         print_chess_board(&board);
-        print_move(out_move);
+        if(turn == white)
+        {
+            int out_move = -1;
+            long long out_eval = -1;
+            if (min_max(&board, &tbls, &keys, &out_move, &out_eval, 2)) {
+                play_move(out_move, &board);
+                print_move(out_move);
+            } else {
+                break;
+            }
+        }
+        else
+        {
+            player_make_move(&board, turn, &tbls);
+        }
+
     }
+
 
     return 0;
 }
