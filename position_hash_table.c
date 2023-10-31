@@ -38,7 +38,7 @@ int find_nearest_prime_above(unsigned n)
         }
     }
 }
-enum bool find_item(struct table* t, value_t zobrist_hash)
+enum bool find_item(HashTable *t, value_t zobrist_hash)
 {
     int index = zobrist_hash % t->n;
 
@@ -47,6 +47,17 @@ enum bool find_item(struct table* t, value_t zobrist_hash)
             return true;
 
     return false;
+}
+
+int position_occurrences(HashTable *t, value_t zobrist_hash)
+{
+    int index = zobrist_hash % t->n;
+
+    for (HashItem * i = t->array[index];i; i = i->next)
+        if (i->zobrist_hash == zobrist_hash)
+            return i->times_seen;
+
+    return 0;
 }
 
 enum bool create_table(HashTable *t, unsigned size)
@@ -88,16 +99,19 @@ enum bool rehash_table(HashTable *t)
     t->array = new_table.array;
     t->n = new_table.n;
     t->used = new_table.used;
+
     return true;
 }
 
 enum bool insert_item(HashTable *t, value_t zobrist_hash)
 {
-    if(find_item(t, zobrist_hash))
-    {
-        printf("ITEM ALREADY EXISTS!!!\n");
-        return false;
-    }
+    int index = zobrist_hash % t->n;
+    for (HashItem * i = t->array[index];i; i = i->next)
+        if (i->zobrist_hash == zobrist_hash)
+        {
+            i->times_seen++;
+            return true;
+        }
 
     if(t->used == t->n)
     {
@@ -110,11 +124,10 @@ enum bool insert_item(HashTable *t, value_t zobrist_hash)
         printf("ERROR CAN'T ALLOCATE MEMORY FOR ITEM!!!\n");
         return false;
     }
-
+    new_item->times_seen = 1;
     new_item->zobrist_hash = zobrist_hash;
     new_item->next = NULL;
 
-    int index = zobrist_hash % t->n;
     if(t->array[index])
     {
         HashItem *i = t->array[index];
@@ -133,29 +146,28 @@ enum bool insert_item(HashTable *t, value_t zobrist_hash)
 enum bool remove_item(HashTable * t, value_t zobrist_hash)
 {
     int index = zobrist_hash % t->n;
-    HashItem *curr = t->array[index], *prev = NULL;
 
-    while(curr)
+    for(HashItem *curr = t->array[index], *prev = NULL; curr ;prev = curr, curr = curr->next)
     {
         if(curr->zobrist_hash == zobrist_hash)
         {
-            if (!prev)
+            if(--curr->times_seen == 0)
             {
-                t->array[index] = curr->next;
+                if (!prev)
+                {
+                    t->array[index] = curr->next;
 
-                if(!curr->next)
-                    t->used --;
+                    if (!curr->next)
+                        t->used--;
+                }
+                else
+                    prev->next = curr->next;
+
+                free(curr);
             }
-            else
-                prev->next = curr->next;
 
-
-            free(curr);
             return true;
         }
-
-        prev = curr;
-        curr = curr->next;
     }
 
     return false;

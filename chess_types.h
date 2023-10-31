@@ -99,6 +99,7 @@ typedef struct item
 {
     struct item *next; /// every item will have a next because two different positions can have the same hash
     value_t zobrist_hash; /// the value the we want to store
+    unsigned times_seen;
 
 } HashItem;
 
