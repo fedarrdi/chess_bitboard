@@ -8,11 +8,25 @@
 #include "piece_movement.h"
 #include "player_interface.h"
 #include "zobrist_hashing.h"
+#include "position_hash_table.h"
 
 ///TO DO: add path, and mate check if path and math positions are being found by the min max algorithm
+HashTable t;
 
 int main()
 {
+    create_table(&t, 2);
+    insert_item(&t, 1);
+    insert_item(&t, 2);
+    insert_item(&t, 3);
+    insert_item(&t, 4);
+    insert_item(&t, 5);
+    insert_item(&t, 6);
+    insert_item(&t, 7);
+    insert_item(&t, 8);
+    insert_item(&t, 9);
+    destroy_table(&t);
+
 
     MoveList list = init_move_list();
     ChessBoard board = parse_FEN("8/8/8/3k4/7R/Q7/PP5B/KP6 w");

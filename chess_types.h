@@ -92,12 +92,31 @@ typedef struct random_keys
     Bitboard side;
 } Keys;
 
+
+typedef unsigned long long value_t;
+
+typedef struct item
+{
+    struct item *next; /// every item will have a next because two different positions can have the same hash
+    value_t zobrist_hash; /// the value the we want to store
+
+} HashItem;
+
+typedef struct table
+{
+    int n, used; /// n - size of the table, used - the number of places that ere occupied
+    struct item **array; ///every table is made of array of pointers to items
+} HashTable;
+
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
+
+///need to deleted
 typedef struct position_array
 {
 
     char *hashed_position_arr_1, *hashed_position_arr_2; /// how many times each position has been reached, at start 0
     int different_positions;
 } Positions;
-
 
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H
