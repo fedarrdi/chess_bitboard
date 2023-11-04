@@ -34,9 +34,9 @@ struct random_keys init_random_keys()
     return random_keys;
 }
 
-Bitboard get_bord_hash(ChessBoard *board, Keys *keys)
+Board_hash get_bord_hash(const ChessBoard *board, const Keys *keys)
 {
-    Bitboard board_hash = 0;
+    Board_hash board_hash = 0;
 
     for(enum piece p = w_pawn; p <= b_king; p++)
     {

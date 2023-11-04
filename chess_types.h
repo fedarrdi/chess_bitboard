@@ -112,12 +112,4 @@ typedef struct table
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
 
-///need to deleted
-typedef struct position_array
-{
-
-    char *hashed_position_arr_1, *hashed_position_arr_2; /// how many times each position has been reached, at start 0
-    int different_positions;
-} Positions;
-
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H

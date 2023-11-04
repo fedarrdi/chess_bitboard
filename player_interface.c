@@ -1,6 +1,8 @@
-#include "chess_types.h"
 #include <stdio.h>
+#include "chess_types.h"
 #include "move_generation.h"
+#include "position_hash_table.h"
+#include "zobrist_hashing.h"
 
 void print_chess_board(ChessBoard *board)
 {
@@ -71,7 +73,7 @@ void print_move(int move)
 
 }
 
-void player_make_move(ChessBoard *board, const LookupTable *tbls)
+void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t)
 {
     enum color side = board->turn;
 
@@ -179,6 +181,11 @@ void player_make_move(ChessBoard *board, const LookupTable *tbls)
         printf("This move exposes king to check.\n");
         goto back;
     }
+
+    Board_hash hash = get_bord_hash(board, keys);
+    insert_item(t, hash);
+
+
 }
 
 void print_move_list(const struct move_list *list)

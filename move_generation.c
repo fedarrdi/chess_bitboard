@@ -290,7 +290,7 @@ enum bool is_king_checked(ChessBoard *board, const LookupTable *tbls)
     Bitboard enemy_attacks = generate_all_attacks(board,  tbls);
     board->turn = !board->turn;
     Bitboard king_position = board->turn == white ? board->pieces[w_king] : board->pieces[b_king];
-    return king_position & enemy_attacks;
+    return !!(king_position & enemy_attacks);
 }
 
 void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)

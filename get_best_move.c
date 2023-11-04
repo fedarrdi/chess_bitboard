@@ -9,8 +9,9 @@
 #include "piece_movement.h"
 #include "player_interface.h"
 #include "zobrist_hashing.h"
+#include "position_hash_table.h"
 
-enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_move, long long  *out_eval, int depth)
+enum bool min_max(ChessBoard *board,const LookupTable *tbls,const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth)
 {
     MoveList list = init_move_list();
 
@@ -24,7 +25,7 @@ enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_mov
     int best_move = -1;
     long long curr_eval, best_eval = evaluate_position(board, tbls, hash_key, list.count);
 
-    ///if the position is mate and there are no moves the
+    ///if the position is mate and there are no moves
     *out_eval = best_eval;
 
     for(int move_index = 0; move_index < list.count; move_index ++)
@@ -39,6 +40,7 @@ enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_mov
 
         /// hash key after the played move
         Board_hash new_key = get_bord_hash(board, keys);
+        insert_item(t, new_key);
 
         ///calculate new position evaluation
         curr_eval = evaluate_position(board, tbls, new_key, list.count);
@@ -48,7 +50,7 @@ enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_mov
 
         /// going one depth further
         if(depth)
-            min_max(board, tbls, keys, out_move, &curr_eval, depth - 1);
+            min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1);
 
         ///set to original
         board->turn = !board->turn;
@@ -59,6 +61,9 @@ enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_mov
             /// undo the move
             memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
             memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
+            /// removing the position if it is seen for the first time, or decresing the seen counter
+
+            remove_item(t, new_key);
 
             best_move = list.moves[move_index];
             best_eval = curr_eval;
@@ -75,6 +80,10 @@ enum bool min_max(ChessBoard *board, LookupTable *tbls, Keys *keys, int *out_mov
         /// undo the move
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
+
+        /// removing the position if it is seen for the first time, or decresing the seen counter
+        remove_item(t, new_key);
+
     }
 
     if(best_move == -1)

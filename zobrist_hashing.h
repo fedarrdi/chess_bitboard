@@ -7,7 +7,6 @@
 #define CHESS_BIT_BOARDS_ZOBRIST_HASHING_H
 
 struct random_keys init_random_keys();
-Bitboard get_bord_hash(ChessBoard *board, Keys *keys);
-
+Bitboard get_bord_hash(const ChessBoard *board, const Keys *keys);
 
 #endif //CHESS_BIT_BOARDS_ZOBRIST_HASHING_H
