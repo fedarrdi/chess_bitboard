@@ -1,5 +1,4 @@
 #include <string.h>
-#include <stdio.h>
 #include "chess_types.h"
 #include "evalute_position.h"
 #include "get_best_move.h"
@@ -36,7 +35,7 @@ enum bool min_max(ChessBoard *board,const LookupTable *tbls,const Keys *keys, Ha
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list.moves[move_index], board);
+        play_move(list.moves[move_index], board); /// when move is made in the main function insert_item() need ti be called
 
         /// hash key after the played move
         Board_hash new_key = get_bord_hash(board, keys);

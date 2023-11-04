@@ -1,4 +1,3 @@
-
 #include "chess_types.h"
 
 #ifndef CHESS_BIT_BOARDS_EVALUTE_POSITION_H

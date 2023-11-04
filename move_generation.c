@@ -1,5 +1,5 @@
-#include "chess_types.h"
 #include <stdio.h>
+#include "chess_types.h"
 #include <string.h>
 #include "piece_movement.h"
 #include "make_move.h"

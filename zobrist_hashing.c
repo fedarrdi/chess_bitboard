@@ -1,6 +1,6 @@
+#include <stdlib.h>
 #include "chess_types.h"
 #include "move_generation.h"
-#include <stdlib.h>
 
 Bitboard get_random_64bit_number()
 {
@@ -11,17 +11,13 @@ Bitboard get_random_64bit_number()
     return r;
 }
 
-struct random_keys init_random_keys()
+Keys init_random_keys()
 {
-    struct random_keys random_keys;
+    Keys random_keys;
 
     for(enum piece p = w_pawn; p <= b_king; p++)
-    {
         for(int square = 0; square < 64; square ++)
-        {
             random_keys.piece[p][square] = get_random_64bit_number();
-        }
-    }
 
     for(int i = 0;i < 16;i++)
         random_keys.castle[i] = get_random_64bit_number();

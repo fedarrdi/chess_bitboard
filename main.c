@@ -10,14 +10,14 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-///TO DO: add path, and mate check if path and math positions are being found by the min max algorithm
+///TO DO: add path, and mate check if path and math positions  are being found by the min max algorithm
 
 int main()
 {
 
     HashTable t;
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("6K1/2PQ4/6pq/3p3P/2pB1b1p/8/4r2k/1R6 b ");
+    ChessBoard board = parse_FEN("6K1/2PQ4/6pq/3p3P/2pB1b1p/8/4r2k/1R6 b");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 

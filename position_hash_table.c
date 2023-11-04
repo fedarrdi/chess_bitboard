@@ -1,6 +1,6 @@
-#include"chess_types.h"
 #include<stdlib.h>
 #include<stdio.h>
+#include"chess_types.h"
 
 uint32_t sqrt64(uint64_t r)
 {
