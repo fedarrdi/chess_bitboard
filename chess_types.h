@@ -1,7 +1,7 @@
 #ifndef CHESS_BIT_BOARDS_CHESS_TYPES_H
 #define CHESS_BIT_BOARDS_CHESS_TYPES_H
 
-#define CHECK_MATE_V 9999999999
+#define CHECK_MATE_V 99999999
 
 #define GET_BIT(bitboard, square) (bitboard & (1ULL << square))
 #define SET_BIT(bitboard, square) (bitboard |= (1ULL << square))
@@ -93,12 +93,10 @@ typedef struct random_keys
 } Keys;
 
 
-typedef unsigned long long value_t;
-
 typedef struct item
 {
     struct item *next; /// every item will have a next because two different positions can have the same hash
-    value_t zobrist_hash; /// the value the we want to store
+    Board_hash zobrist_hash; /// the value the we want to store
     unsigned times_seen;
 
 } HashItem;

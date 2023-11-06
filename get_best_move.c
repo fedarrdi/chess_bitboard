@@ -10,7 +10,7 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-enum bool min_max(ChessBoard *board,const LookupTable *tbls,const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth)
+enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth)
 {
     MoveList list = init_move_list();
 
@@ -22,7 +22,7 @@ enum bool min_max(ChessBoard *board,const LookupTable *tbls,const Keys *keys, Ha
     Board_hash hash_key = get_bord_hash(board, keys);
 
     int best_move = -1;
-    long long curr_eval, best_eval = evaluate_position(board, tbls, hash_key, list.count);
+    long long curr_eval, best_eval = evaluate_position(board, tbls, t, hash_key, list.count);
 
     ///if the position is mate and there are no moves
     *out_eval = best_eval;
@@ -42,7 +42,7 @@ enum bool min_max(ChessBoard *board,const LookupTable *tbls,const Keys *keys, Ha
         insert_item(t, new_key);
 
         ///calculate new position evaluation
-        curr_eval = evaluate_position(board, tbls, new_key, list.count);
+        curr_eval = evaluate_position(board, tbls, t, new_key, list.count);
 
         ///change the turn
         board->turn = !board->turn;

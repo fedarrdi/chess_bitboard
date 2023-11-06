@@ -10,24 +10,45 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-///TO DO: add path, and mate check if path and math positions  are being found by the min max algorithm
+///TO DO: Tables for piece activasion
 
 int main()
 {
 
     HashTable t;
+    create_table(&t, 100);
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("6K1/2PQ4/6pq/3p3P/2pB1b1p/8/4r2k/1R6 b");
+    ChessBoard board = parse_FEN("");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
     print_chess_board(&board);
 
 
-    int move, depth = 6;
-    long long eval;
-    min_max(&board, &tbls, &keys, &t, &move, &eval, depth);
-    print_move(move);
+    int depth = 5;
+    enum color turn = black;
+
+    while(1)
+    {
+        long long eval;
+        int move;
+
+        if(turn == white)
+        {
+            board.turn = turn;
+            min_max(&board, &tbls, &keys, &t, &move, &eval, depth);
+            print_move(move);
+            play_move(move, &board);
+        }
+        else
+        {
+            board.turn = turn;
+            player_make_move(&board, &tbls, &keys, &t);
+        }
+
+        print_chess_board(&board);
+        turn = !turn;
+    }
 
 
 

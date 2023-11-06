@@ -38,7 +38,7 @@ int find_nearest_prime_above(unsigned n)
         }
     }
 }
-enum bool find_item(HashTable *t, value_t zobrist_hash)
+enum bool find_item(HashTable *t, Board_hash zobrist_hash)
 {
     int index = zobrist_hash % t->n;
 
@@ -49,7 +49,7 @@ enum bool find_item(HashTable *t, value_t zobrist_hash)
     return false;
 }
 
-int position_occurrences(HashTable *t, value_t zobrist_hash)
+int position_occurrences(HashTable *t, Board_hash zobrist_hash)
 {
     int index = zobrist_hash % t->n;
 
@@ -77,7 +77,7 @@ enum bool create_table(HashTable *t, unsigned size)
 
     return true;
 }
-enum bool insert_item(HashTable *t, value_t zobrist_hash);
+enum bool insert_item(HashTable *t, Board_hash zobrist_hash);
 void destroy_table(HashTable *t);
 
 enum bool rehash_table(HashTable *t)
@@ -103,7 +103,7 @@ enum bool rehash_table(HashTable *t)
     return true;
 }
 
-enum bool insert_item(HashTable *t, value_t zobrist_hash)
+enum bool insert_item(HashTable *t, Board_hash zobrist_hash)
 {
     int index = zobrist_hash % t->n;
     for (HashItem * i = t->array[index];i; i = i->next)
@@ -143,7 +143,7 @@ enum bool insert_item(HashTable *t, value_t zobrist_hash)
     return true;
 }
 
-enum bool remove_item(HashTable * t, value_t zobrist_hash)
+enum bool remove_item(HashTable * t, Board_hash zobrist_hash)
 {
     int index = zobrist_hash % t->n;
 
