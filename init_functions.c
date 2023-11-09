@@ -104,6 +104,7 @@ ChessBoard parse_FEN(const char *FEN)
         SET_BIT(board.pieces[board_index], square);
         file++;
     }
+
     board.occupied[black] = board.pieces[b_rook]   | board.pieces[b_knight] |
                              board.pieces[b_bishop] | board.pieces[b_queen]  |
                              board.pieces[b_king]   | board.pieces[b_pawn];

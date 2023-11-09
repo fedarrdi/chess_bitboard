@@ -63,6 +63,8 @@ enum rank {RANK_8, RANK_7, RANK_6, RANK_5, RANK_4, RANK_3, RANK_2, RANK_1};
 enum castle {KC, QC, kc, qc};
 enum bool {false, true};
 
+enum game_state {opening, middlegame, endgame};
+
 typedef struct bit_chess_board
 {
     Bitboard occupied[3];///by white by black by both
@@ -109,5 +111,10 @@ typedef struct table
 
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
+
+typedef struct evaluation_tables
+{
+    int factor_table[12]; /// for every piece
+} EvalTables;
 
 #endif //CHESS_BIT_BOARDS_CHESS_TYPES_H
