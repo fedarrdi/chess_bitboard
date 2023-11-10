@@ -3,6 +3,6 @@
 #ifndef CHESS_BIT_BOARDS_EVALUTE_POSITION_H
 #define CHESS_BIT_BOARDS_EVALUTE_POSITION_H
 
-long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count);
+long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count, int move);
 
 #endif //CHESS_BIT_BOARDS_EVALUTE_POSITION_H

@@ -4,6 +4,7 @@
 #include "piece_movement.h"
 #include "make_move.h"
 #include "init_functions.h"
+#include "player_interface.h"
 
 Bitboard (*attack_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls) =
         {
@@ -36,7 +37,8 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 
     Bitboard attacks = 0;
 
-    for(int i = start_index;i <= end_index; i++) {
+    for(int i = start_index;i <= end_index; i++)
+    {
         Bitboard copy_board = board->pieces[i];
 
         while (copy_board)
@@ -52,6 +54,9 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 
 void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct move_list *list)
 {
+
+    list->count = 0;///procotion
+
     int start_index = board->turn == white ? w_pawn : b_pawn,
             end_index = board->turn == white ? w_king : b_king,
             enemy_start_index = board->turn == white ? b_pawn : w_pawn,
@@ -303,7 +308,6 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
 
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
-
         play_move(list->moves[i], board);
 
         if(is_king_checked(board, tbls))
@@ -315,5 +319,5 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
     }
-    list->count = new_list_count;
+    //list->count = new_list_count;
 }

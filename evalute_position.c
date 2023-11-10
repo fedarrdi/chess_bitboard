@@ -152,9 +152,9 @@ int check_for_mate(ChessBoard *board, const LookupTable *tbls, unsigned curr_leg
     return 0;
 }
 
-int piece_weight[13] = {10, 50, 50, 100, 200, 1000000, -10, -50, -50, -100, -200, -1000000, 0};
+int piece_weight[13] = {10, 50, 50, 100, 200, 0, -10, -50, -50, -100, -200, 0, 0};
 
-long long count_pieces(ChessBoard *board)
+long long count_pieces(const ChessBoard *board)
 {
     long long res = 0;
     for (int i = w_pawn; i <= b_king; i++)
@@ -164,32 +164,22 @@ long long count_pieces(ChessBoard *board)
     return res;
 }
 
-long long positional_points(ChessBoard *board)
+long long move_positioning(const ChessBoard *board, int move)
 {
-    long long res = 0;
-    int from = (board->turn == white) ? w_pawn : b_pawn;
-    int to = (board->turn == white) ? w_king : b_king;
-
-    for(int i = from; i <= to; i++)
-    {
-        for (Bitboard piece_board = board->pieces[i]; piece_board;)
-        {
-            int square = get_f1bit_index(piece_board);
-            POP_BIT(piece_board, square);
-            res += opening_table[i][square];
-        }
-    }
-
-    return res * ((board->turn == black) ? (-1) : 1);
+    int piece = DECODE_MOVE_PIECE(move);
+    int square = DECODE_MOVE_TO(move);
+    return (opening_table[piece][square] * (board->turn == black)) ? (-1) : 1;
 }
 
-long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count)
+
+
+long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count, int move)
 {
     int mate_factor = check_for_mate(board, tbls, curr_legal_move_count);
     if(mate_factor)
         return mate_factor;
 
     int path_factor = check_for_path(board, tbls, t, hash_key, curr_legal_move_count);
-    long long score = count_pieces(board) + positional_points(board);
+    long long score = count_pieces(board) + move_positioning(board, move);
     return  score * path_factor;
 }

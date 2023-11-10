@@ -22,7 +22,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, H
     Board_hash hash_key = get_bord_hash(board, keys);
 
     int best_move = -1;
-    long long curr_eval, best_eval = evaluate_position(board, tbls, t, hash_key, list.count);
+    long long curr_eval, best_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
 
     ///if the position is mate and there are no moves
     *out_eval = best_eval;
@@ -42,7 +42,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, H
         insert_item(t, new_key);
 
         ///calculate new position evaluation
-        curr_eval = evaluate_position(board, tbls, t, new_key, list.count);
+        curr_eval = evaluate_position(board, tbls, t, new_key, list.count, list.moves[move_index]);
 
         ///change the turn
         board->turn = !board->turn;

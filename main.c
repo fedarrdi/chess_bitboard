@@ -22,9 +22,6 @@ int main()
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
-    print_chess_board(&board);
-
-
     int depth = 3;
     enum color turn = white;
 
@@ -51,7 +48,6 @@ int main()
         print_chess_board(&board);
         turn = !turn;
     }
-
 
 
     return 0;
