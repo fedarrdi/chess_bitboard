@@ -168,7 +168,7 @@ long long move_positioning(const ChessBoard *board, int move)
 {
     int piece = DECODE_MOVE_PIECE(move);
     int square = DECODE_MOVE_TO(move);
-    return (opening_table[piece][square] * (board->turn == black)) ? (-1) : 1;
+    return opening_table[piece][square] * ((board->turn == black) ? (-1) : 1);
 }
 
 

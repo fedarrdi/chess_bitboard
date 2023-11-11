@@ -1,3 +1,4 @@
+#include<stdio.h>
 #include <string.h>
 #include "chess_types.h"
 #include "evalute_position.h"
