@@ -119,6 +119,26 @@ void play_move(int move, ChessBoard *board)
     }
     else
     {
+        /// need to add if a king or a rook is moved the qc kc QC KC need to me changed
+
+        if(piece == w_king)
+            board->castles[QC] = board->castles[KC] = 0;
+
+        if(piece == b_king)
+            board->castles[qc] = board->castles[kc] = 0;
+
+        if(piece == w_rook && from == a1)
+            board->castles[QC] = 0;
+
+        if(piece == w_rook && from == h1)
+            board->castles[KC] = 0;
+
+        if(piece == b_rook && from == a8)
+            board->castles[qc] = 0;
+
+        if(piece == b_rook && from == h8)
+            board->castles[kc] = 0;
+
         POP_BIT(board->occupied[both], from);
         POP_BIT(board->occupied[board->turn], from);
         POP_BIT(board->pieces[piece], from);

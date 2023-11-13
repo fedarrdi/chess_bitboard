@@ -278,7 +278,7 @@ void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct 
 
             if(side == black && board->castles[qc])
                 if(!GET_BIT(board->occupied[both], b8) && !GET_BIT(board->occupied[both], c8) && !GET_BIT(board->occupied[both], d8) &&
-                   !((1ULL << c8) & enemy_attacks)  && !((1ULL << d8) & enemy_attacks))
+                   !((1ULL << c8) & enemy_attacks) && !((1ULL << d8) & enemy_attacks))
                 {
                    // printf("Queen side castle\n");
                     curr_move = ENCODE_MOVE(bit_index_from, bit_index_from - 2, b_king, empty, empty, 0, 0, 1);

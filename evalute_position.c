@@ -129,16 +129,17 @@ int opening_table[12][64] =
                 },
                 /// black king
                 {
+                        20, 30, 10, 0, 0, 10, 30, 20,
                         20, 20, 0, 0, 0, 0, 20, 20,
-                        10, -20, -20, -20, -20, -20, -20, 10,
-                        30, -30, -30, -40, -40, -30, -30, 30,
-                        40, -40, -40, -50, -50, -40, -40, 40,
-                        50, -50, -50, -60, -60, -50, -50, 50,
-                        60, -60, -60, -70, -70, -60, -60, 60,
-                        70, -70, -70, -80, -80, -70, -70, 70,
-                        80, -80, -80, -90, -90, -80, -80, 80
+                        -10, -20, -20, -20, -20, -20, -20, -10,
+                        -20, -30, -30, -40, -40, -30, -30, -20,
+                        -30, -40, -40, -50, -50, -40, -40, -30,
+                        -40, -50, -50, -60, -60, -50, -50, -40,
+                        -50, -60, -60, -70, -70, -60, -60, -50,
+                        -60, -70, -70, -80, -80, -70, -70, -60
                 }
         };
+
 int check_for_path(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_moves_count)
 {
     return ((position_occurrences(t, hash_key) == 3) ? 0 : 1) || (!curr_legal_moves_count && !is_king_checked(board, tbls));
@@ -170,8 +171,6 @@ long long move_positioning(const ChessBoard *board, int move)
     int square = DECODE_MOVE_TO(move);
     return opening_table[piece][square] * ((board->turn == black) ? (-1) : 1);
 }
-
-
 
 long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count, int move)
 {

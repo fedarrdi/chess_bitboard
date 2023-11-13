@@ -18,11 +18,11 @@ int main()
     HashTable t;
     create_table(&t, 100);
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("rnbqkbnr/pppppppp/8/8/8/pppppppp/PPPPPPPP/1N4N1 w kq  ");
+    ChessBoard board = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
-    int depth = 0;
+    int depth = 2;
     enum color turn = white;
 
     while(1)
