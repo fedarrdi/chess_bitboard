@@ -14,7 +14,6 @@
 
 int main()
 {
-
     HashTable t;
     create_table(&t, 100);
     MoveList list = init_move_list();
@@ -22,10 +21,10 @@ int main()
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
 
-    int depth = 2;
+    int depth = 6;
     enum color turn = white;
 
-    while(1)
+    for(int i = 0;i < 4;i++)
     {
         long long eval;
         int move;
@@ -33,14 +32,14 @@ int main()
         if(turn == white)
         {
             board.turn = turn;
-            min_max(&board, &tbls, &keys, &t, &move, &eval, depth);
+            min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0);
             print_move(move);
             play_move(move, &board);
         }
         else
         {
             board.turn = turn;
-            min_max(&board, &tbls, &keys, &t, &move, &eval, depth);
+            min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0);
             print_move(move);
             play_move(move, &board);
         }

@@ -18,11 +18,20 @@ Bitboard (*move_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side,
                 black_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move
         };
 
-int get_f1bit_index(Bitboard board) /// need to be faster
+int get_f1bit_index(Bitboard board)
 {
-    for(int i = 0;i < 64;i++)
-        if(GET_BIT(board, i)) return i;
-    return -1;
+     if (n == 0) 
+        return -1;
+
+    int index = 0;
+
+    while (!(n & 1))
+    {
+        n >>= 1;
+        index++;
+    }
+
+    return index;
 }
 
 Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)

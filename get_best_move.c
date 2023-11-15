@@ -11,7 +11,7 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth)
+enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth, int alpha, int beta)
 {
     MoveList list = init_move_list();
 
@@ -50,7 +50,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, H
 
         /// going one depth further
         if(depth)
-            min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1);
+            min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1, alpha, beta);
 
         ///set to original
         board->turn = !board->turn;
@@ -73,6 +73,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, H
         ///if the current position is better then the current best update
         if((board->turn == white && best_eval <= curr_eval) || (board->turn == black && best_eval >= curr_eval))
         {
+            (board->turn) ? (alpha = curr_eval) : (beta = curr_eval);
             best_eval = curr_eval;
             best_move = list.moves[move_index];
         }
@@ -84,6 +85,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls,const Keys *keys, H
         /// removing the position if it is seen for the first time, or decresing the seen counter
         remove_item(t, new_key);
 
+        if(beta <= alpha) break;
     }
 
     if(best_move == -1)
