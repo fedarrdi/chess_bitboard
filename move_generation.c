@@ -18,11 +18,20 @@ Bitboard (*move_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side,
                 black_pawn_move, knight_move, bishop_move, rook_move, queen_move, king_move
         };
 
-int get_f1bit_index(Bitboard board) /// need to be faster
+int get_f1bit_index(Bitboard board)
 {
-    for(int i = 0;i < 64;i++)
-        if(GET_BIT(board, i)) return i;
-    return -1;
+     if (board == 0) 
+        return -1;
+
+    int index = 0;
+
+    while (!(board & 1))
+    {
+        board >>= 1;
+        index++;
+    }
+
+    return index;
 }
 
 Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitboard enemy_side, const LookupTable *tbls)
@@ -298,7 +307,7 @@ enum bool is_king_checked(ChessBoard *board, const LookupTable *tbls)
     return !!(king_position & enemy_attacks);
 }
 
-void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)
+void sieve_moves(MoveList *list, ChessBoard *board, const LookupTable *tbls)
 {
     unsigned new_list_count = list->count;
     for(int i = 0;i < list->count;i++)
@@ -319,5 +328,39 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
     }
-    //list->count = new_list_count;
+}
+
+
+/*
+    Because the number of moves in position is a small number
+    and we are ordering by if a move is capture or not.
+    We can perform bucket sort.
+    The function clear the NULL moves from the move list.
+*/
+void move_ordering_by_capture(MoveList *list) /// IMPROVEMENT ORDER THE MOVES BASED ON WHO CAPTURED THEM PAWN HAVE THE BIGGEST PRIORITY
+{
+    int capture_moves[200], regular_moves[200];
+    int capture_index = 0,  regular_index = 0;
+
+    for(int i = 0;i < list->count;i++)
+    {
+        int move = list->moves[i];
+        
+        if(!move)
+            continue;
+
+        if(DECODE_MOVE_CAPTURE(move) != empty)
+            capture_moves[capture_index++] = move;
+        else
+            regular_moves[regular_index++] = move;
+    }
+    
+    list->count = 0;
+    memset(list->moves, 0, sizeof(list->moves));
+    
+    for(int i = 0;i < capture_index;i++)
+        LIST_PUSH(list, capture_moves[i]);
+    
+    for(int i = 0;i < regular_index; i++)
+        LIST_PUSH(list, regular_moves[i]);
 }

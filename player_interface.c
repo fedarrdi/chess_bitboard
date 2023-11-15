@@ -188,7 +188,7 @@ void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *ke
 
 }
 
-void print_move_list(const struct move_list *list)
+void print_move_list(const MoveList *list)
 {
     printf("\n\n\n**************** Position moves ****************\n\n\n");
     for(int i = 0;i < list->count;i++)
