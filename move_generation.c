@@ -61,7 +61,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
     return attacks;
 }
 
-void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct move_list *list)
+void generate_position_moves(ChessBoard *board, const LookupTable *tbls, MoveList *list)
 {
 
     list->count = 0;///procotion
@@ -339,8 +339,8 @@ void sieve_moves(MoveList *list, ChessBoard *board, const LookupTable *tbls)
 */
 void move_ordering_by_capture(MoveList *list) /// IMPROVEMENT ORDER THE MOVES BASED ON WHO CAPTURED THEM PAWN HAVE THE BIGGEST PRIORITY
 {
-    int capture_moves[200], regular_moves[200];
-    int capture_index = 0,  regular_index = 0;
+    int capture_moves[12][200], regular_moves[200];
+    int capture_index[12] = {0}, regular_index = 0;
 
     for(int i = 0;i < list->count;i++)
     {
@@ -350,7 +350,10 @@ void move_ordering_by_capture(MoveList *list) /// IMPROVEMENT ORDER THE MOVES BA
             continue;
 
         if(DECODE_MOVE_CAPTURE(move) != empty)
-            capture_moves[capture_index++] = move;
+        {
+            enum piece piece = DECODE_MOVE_PIECE(move);
+            capture_moves[piece][capture_index[piece]++] = move;
+        }
         else
             regular_moves[regular_index++] = move;
     }
@@ -358,9 +361,15 @@ void move_ordering_by_capture(MoveList *list) /// IMPROVEMENT ORDER THE MOVES BA
     list->count = 0;
     memset(list->moves, 0, sizeof(list->moves));
     
-    for(int i = 0;i < capture_index;i++)
-        LIST_PUSH(list, capture_moves[i]);
-    
+    for(int piece = w_pawn;piece <= b_king; piece++)
+    {
+        if(!capture_index[piece])
+            continue;
+
+        for(int i = 0;i < capture_index[piece];i++)
+            LIST_PUSH(list, capture_moves[piece][i]);
+    }
+
     for(int i = 0;i < regular_index; i++)
         LIST_PUSH(list, regular_moves[i]);
 }

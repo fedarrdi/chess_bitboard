@@ -18,6 +18,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     ///generate position moves
     generate_position_moves(board,  tbls, &list);
     sieve_moves(&list, board, tbls);
+    move_ordering_by_capture(&list);
 
     ///current position hash key
     Board_hash hash_key = get_bord_hash(board, keys);
