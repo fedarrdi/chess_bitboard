@@ -17,11 +17,19 @@ int main()
     HashTable t;
     create_table(&t, 100);
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq");
+    ChessBoard board = parse_FEN("8/5P2/8/8/8/8/8/8 w --");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
+    
+    print_chess_board(&board);
+    generate_position_moves(&board, &tbls, &list);
+    sieve_moves(&list, &board, &tbls);
+    print_move_list(&list);
+    
+    play_move(list.moves[0], &board);
+    print_chess_board(&board);
 
-    int depth = 6;
+    /*int depth = 6;
     enum color turn = white;
 
     for(int i = 0;i < 4;i++)
@@ -46,7 +54,7 @@ int main()
 
         print_chess_board(&board);
         turn = !turn;
-    }
+    }*/
 
 
 

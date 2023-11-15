@@ -8,7 +8,7 @@ void play_move(int move, ChessBoard *board)
     int from = DECODE_MOVE_FROM(move),
             to = DECODE_MOVE_TO(move),
             piece = DECODE_MOVE_PIECE(move),
-            prom_piece = DECODE_MOVE_PIECE(move),
+            prom_piece = DECODE_MOVE_PROMOTED_PIECE(move),
             capture_piece = DECODE_MOVE_CAPTURE(move),
             double_pawn_push_flag = DECODE_MOVE_DOUBLE_PAWN_PUSH(move),
             enpassant_flag = DECODE_MOVE_ENPASSANT(move),
@@ -119,8 +119,6 @@ void play_move(int move, ChessBoard *board)
     }
     else
     {
-        /// need to add if a king or a rook is moved the qc kc QC KC need to me changed
-
         if(piece == w_king)
             board->castles[QC] = board->castles[KC] = 0;
 
@@ -155,7 +153,7 @@ void play_move(int move, ChessBoard *board)
         if (prom_piece != empty)
         {
             enum piece pawn = board->turn == white ? w_pawn : b_pawn;
-
+            printf("In promotion %d\n", prom_piece);
             POP_BIT(board->pieces[pawn], to);
             SET_BIT(board->pieces[prom_piece], to);
         }

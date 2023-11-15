@@ -20,14 +20,14 @@ Bitboard (*move_array[12])(Bitboard pos, Bitboard own_side, Bitboard enemy_side,
 
 int get_f1bit_index(Bitboard board)
 {
-     if (n == 0) 
+     if (board == 0) 
         return -1;
 
     int index = 0;
 
-    while (!(n & 1))
+    while (!(board & 1))
     {
-        n >>= 1;
+        board >>= 1;
         index++;
     }
 
