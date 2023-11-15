@@ -18,7 +18,14 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     ///generate position moves
     generate_position_moves(board,  tbls, &list);
     sieve_moves(&list, board, tbls);
+    
+    /*
+        Move ordering speeds up the code by making capturing moves be seen 
+        first, therefor sooner alpha beta cuts accurr.
+     */
     move_ordering_by_capture(&list);
+    
+
 
     ///current position hash key
     Board_hash hash_key = get_bord_hash(board, keys);
@@ -85,7 +92,11 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         /// removing the position if it is seen for the first time, or decresing the seen counter
         remove_item(t, new_key);
 
-        if(beta <= alpha) break;
+        if(beta <= alpha) 
+        {
+            //printf("Alpha Beta prunning accurr depth: %d\n", depth);
+            break;
+        }
     }
 
     if(best_move == -1)

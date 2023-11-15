@@ -21,12 +21,12 @@ int main()
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
     
-    generate_position_moves(&board, &tbls, &list);
+/*  generate_position_moves(&board, &tbls, &list);
     sieve_moves(&list, &board, &tbls);
     move_ordering_by_capture(&list);
-    print_move_list(&list);
+    print_move_list(&list); */
 
-/*    int depth = 7;
+    int depth = 8;
     enum color turn = white;
 
     for(int i = 0;i < 10;i++)
@@ -51,7 +51,7 @@ int main()
 
         print_chess_board(&board);
         turn = !turn;
-    }*/
+    }
 
     return 0;
 }
