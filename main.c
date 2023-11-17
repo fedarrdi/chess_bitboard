@@ -10,29 +10,27 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-///TO DO: Tables for piece activasion
-
+///TO DO: Check promotion aways get knight  ???
 int main()
 {
     HashTable t;
     create_table(&t, 100);
     MoveList list = init_move_list();
-    ChessBoard board = parse_FEN("8/5P2/8/8/8/8/8/8 w --");
+    ChessBoard board = parse_FEN("1k2r2r/ppp2p1p/3p1np1/1q1p4/3P1b2/1PQ2PN1/PBP1P1PP/RN2K2R b KQk");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
-    
+   
     print_chess_board(&board);
+    /*
     generate_position_moves(&board, &tbls, &list);
     sieve_moves(&list, &board, &tbls);
-    print_move_list(&list);
-    
-    play_move(list.moves[0], &board);
-    print_chess_board(&board);
+    move_ordering_by_capture(&list);
+    print_move_list(&list); 
 
-    /*int depth = 6;
+    int depth = 8;
     enum color turn = white;
 
-    for(int i = 0;i < 4;i++)
+    for(int i = 0;i < 10;i++)
     {
         long long eval;
         int move;
@@ -54,9 +52,7 @@ int main()
 
         print_chess_board(&board);
         turn = !turn;
-    }*/
-
-
-
+    }
+*/
     return 0;
 }

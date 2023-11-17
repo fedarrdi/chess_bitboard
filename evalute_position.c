@@ -153,7 +153,7 @@ int check_for_mate(ChessBoard *board, const LookupTable *tbls, unsigned curr_leg
     return 0;
 }
 
-int piece_weight[13] = {10, 50, 50, 100, 200, 0, -10, -50, -50, -100, -200, 0, 0};
+int piece_weight[13] = {30, 100, 100, 200, 600, 0, -30, -100, -100, -200, -600, 0, 0};
 
 long long count_pieces(const ChessBoard *board)
 {
@@ -179,6 +179,6 @@ long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTabl
         return mate_factor;
 
     int path_factor = check_for_path(board, tbls, t, hash_key, curr_legal_move_count);
-    long long score = count_pieces(board) + move_positioning(board, move);
+    long long score = count_pieces(board);
     return  score * path_factor;
 }

@@ -153,7 +153,6 @@ void play_move(int move, ChessBoard *board)
         if (prom_piece != empty)
         {
             enum piece pawn = board->turn == white ? w_pawn : b_pawn;
-            printf("In promotion %d\n", prom_piece);
             POP_BIT(board->pieces[pawn], to);
             SET_BIT(board->pieces[prom_piece], to);
         }

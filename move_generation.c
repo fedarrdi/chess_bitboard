@@ -42,7 +42,7 @@ Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitbo
 Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 {
     int start_index = board->turn == white ? w_pawn : b_pawn,
-            end_index = board->turn == white ? w_king : b_king;
+        end_index = board->turn == white ? w_king : b_king;
 
     Bitboard attacks = 0;
 
@@ -61,7 +61,7 @@ Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
     return attacks;
 }
 
-void generate_position_moves(ChessBoard *board, const LookupTable *tbls, struct move_list *list)
+void generate_position_moves(ChessBoard *board, const LookupTable *tbls, MoveList *list)
 {
 
     list->count = 0;///procotion
@@ -307,7 +307,7 @@ enum bool is_king_checked(ChessBoard *board, const LookupTable *tbls)
     return !!(king_position & enemy_attacks);
 }
 
-void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *tbls)
+void sieve_moves(MoveList *list, ChessBoard *board, const LookupTable *tbls)
 {
     unsigned new_list_count = list->count;
     for(int i = 0;i < list->count;i++)
@@ -328,5 +328,48 @@ void sieve_moves(struct move_list *list, ChessBoard *board, const LookupTable *t
         memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
         memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
     }
-    //list->count = new_list_count;
+}
+
+
+/*
+    Because the number of moves in position is a small number
+    and we are ordering by if a move is capture or not.
+    We can perform bucket sort.
+    The function clear the NULL moves from the move list.
+*/
+void move_ordering_by_capture(MoveList *list) /// IMPROVEMENT ORDER THE MOVES BASED ON WHO CAPTURED THEM PAWN HAVE THE BIGGEST PRIORITY
+{
+    int capture_moves[12][200], regular_moves[200];
+    int capture_index[12] = {0}, regular_index = 0;
+
+    for(int i = 0;i < list->count;i++)
+    {
+        int move = list->moves[i];
+        
+        if(!move)
+            continue;
+
+        if(DECODE_MOVE_CAPTURE(move) != empty)
+        {
+            enum piece piece = DECODE_MOVE_PIECE(move);
+            capture_moves[piece][capture_index[piece]++] = move;
+        }
+        else
+            regular_moves[regular_index++] = move;
+    }
+    
+    list->count = 0;
+    memset(list->moves, 0, sizeof(list->moves));
+    
+    for(int piece = w_pawn;piece <= b_king; piece++)
+    {
+        if(!capture_index[piece])
+            continue;
+
+        for(int i = 0;i < capture_index[piece];i++)
+            LIST_PUSH(list, capture_moves[piece][i]);
+    }
+
+    for(int i = 0;i < regular_index; i++)
+        LIST_PUSH(list, regular_moves[i]);
 }

@@ -4,10 +4,29 @@
 #include "position_hash_table.h"
 #include "zobrist_hashing.h"
 
+void print_piece(int piece_type)
+{
+    switch (piece_type) 
+    {
+        case 0: printf(" \u2659 |"); break;
+        case 1: printf(" \u2658 |"); break;
+        case 2: printf(" \u2657 |"); break;
+        case 3: printf(" \u2656 |"); break;
+        case 4: printf(" \u2655 |"); break;
+        case 5: printf(" \u2654 |"); break;
+        case 6: printf(" \u265F |"); break;
+        case 7: printf(" \u265E |"); break;
+        case 8: printf(" \u265D |"); break;
+        case 9: printf(" \u265C |"); break;
+        case 10:printf(" \u265B |"); break;
+        case 11:printf(" \u265A |"); break;
+        default: printf("   |"); break;
+    }
+
+}
+
 void print_chess_board(ChessBoard *board)
 {
-    const char *piece_to_symbol = "PHBRQKphbrqk";
-
     printf("\n");
     for(int y = 0;y < 8;y++)
     {
@@ -20,17 +39,15 @@ void print_chess_board(ChessBoard *board)
         for(int x = 0;x < 8;x++)
         {
             int square = y * 8 + x;
-            char curr_piece = ' ';
-
+            int piece = empty; 
             if((board->occupied[both] & (1ULL << square)))
                 for(int piece_index = 0;piece_index < 12; piece_index++)
                     if((board->pieces[piece_index] & (1ULL << square)))
                     {
-                        curr_piece = piece_to_symbol[piece_index];
+                        piece = piece_index;
                         break;
                     }
-
-            printf(" %c |", curr_piece);
+            print_piece(piece);
         }
 
         if (y == 8 - 1)
@@ -188,7 +205,7 @@ void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *ke
 
 }
 
-void print_move_list(const struct move_list *list)
+void print_move_list(const MoveList *list)
 {
     printf("\n\n\n**************** Position moves ****************\n\n\n");
     for(int i = 0;i < list->count;i++)
