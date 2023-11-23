@@ -77,7 +77,7 @@ int opening_table[12][64] =
                         0, 0, 0, 0, 0, 0, 0, 0,
                         5, 10, 10, -20, -20, 10, 10, 5,
                         5, -5, -10, 0, 0, -10, -5, 5,
-                        0, 0, 0, 20, 20, 0, 0, 0,
+                        0, 0, 0, 40, 40, 0, 0, 0,
                         5, 5, 10, 25, 25, 10, 5, 5,
                         10, 10, 20, 30, 30, 20, 10, 10,
                         50, 50, 50, 50, 50, 50, 50, 50,
@@ -148,12 +148,15 @@ int check_for_path(ChessBoard *board, const LookupTable *tbls, HashTable *t, Boa
 int check_for_mate(ChessBoard *board, const LookupTable *tbls, unsigned curr_legal_moves_count)
 {
     if(!curr_legal_moves_count && is_king_checked(board, tbls))
-        return 10 * CHECK_MATE_V * ( (board->turn == white) ? (-1) : (1) ); /// if white are mate then black wins
+    {
+        printf("mate found!!!\n");
+        return CHECK_MATE_V * ( (board->turn == white) ? (-1) : (1) ); /// if white are mate then black wins
+    }
 
     return 0;
 }
 
-int piece_weight[13] = {10, 50, 50, 100, 200, 0, -10, -50, -50, -100, -200, 0, 0};
+int piece_weight[13] = {30, 100, 100, 200, 600, 0, -30, -100, -100, -200, -600, 0, 0};
 
 long long count_pieces(const ChessBoard *board)
 {

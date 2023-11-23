@@ -42,7 +42,7 @@ Bitboard get_piece_move(enum piece piece, Bitboard pos, Bitboard own_side, Bitbo
 Bitboard generate_all_attacks(const ChessBoard *board, const LookupTable *tbls)
 {
     int start_index = board->turn == white ? w_pawn : b_pawn,
-            end_index = board->turn == white ? w_king : b_king;
+        end_index = board->turn == white ? w_king : b_king;
 
     Bitboard attacks = 0;
 

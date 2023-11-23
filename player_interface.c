@@ -4,10 +4,28 @@
 #include "position_hash_table.h"
 #include "zobrist_hashing.h"
 
+void print_piece(int piece_type)
+{
+    switch (piece_type)
+    {
+        case 0: printf(" \u265F |"); break;
+        case 1: printf(" \u265E |"); break;
+        case 2: printf(" \u265D |"); break;
+        case 3: printf(" \u265C |"); break;
+        case 4:printf(" \u265B |"); break;
+        case 5:printf(" \u265A |"); break;
+        case 6: printf(" \u2659 |"); break;
+        case 7: printf(" \u2658 |"); break;
+        case 8: printf(" \u2657 |"); break;
+        case 9: printf(" \u2656 |"); break;
+        case 10: printf(" \u2655 |"); break;
+        case 11: printf(" \u2654 |"); break;
+        default: printf("   |"); break;
+    }
+}
+
 void print_chess_board(ChessBoard *board)
 {
-    const char *piece_to_symbol = "PHBRQKphbrqk";
-
     printf("\n");
     for(int y = 0;y < 8;y++)
     {
@@ -20,17 +38,15 @@ void print_chess_board(ChessBoard *board)
         for(int x = 0;x < 8;x++)
         {
             int square = y * 8 + x;
-            char curr_piece = ' ';
-
+            int piece = empty; 
             if((board->occupied[both] & (1ULL << square)))
                 for(int piece_index = 0;piece_index < 12; piece_index++)
                     if((board->pieces[piece_index] & (1ULL << square)))
                     {
-                        curr_piece = piece_to_symbol[piece_index];
+                        piece = piece_index;
                         break;
                     }
-
-            printf(" %c |", curr_piece);
+            print_piece(piece);
         }
 
         if (y == 8 - 1)
@@ -72,6 +88,59 @@ void print_move(int move)
     printf("\n MOVE VALUE: %d\n\n", move);
 
 }
+/*
+void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t)
+{
+    enum color side = board->turn;
+
+    int rank;
+    char file;
+
+    back:;
+
+    printf("Please enter file and rank.\n");
+    scanf(" %c %d", &file ,&rank);
+
+    while(file < 'A' || file > 'H')
+    {
+        printf("File incorrect!\n");
+        printf("Please enter file.\n");
+        scanf("%c", &file);
+    }
+    int from_square = (8 - rank) * 8 + file - 'A';
+
+
+    while(rank < 0 || rank > 8)
+    {
+        printf("Rank incorrect!\n");
+        printf("Please enter Rank.\n");
+        scanf("%d", &rank);
+    }
+    int to_square = (8 - rank1) * 8 + file1 - 'A';
+
+
+    enum piece curr_piece = 0;
+    for(enum piece i = w_pawn;i <= b_king; i++)
+    {
+        if(board->pieces[i] & 1ULL << from_square)
+        {
+            piece = i;
+            break;
+        }
+    }
+    
+    if(piece == w_pawn)
+    {
+            
+    }
+
+    if(piece == b_pawn)
+    {
+
+
+    }
+
+}*/
 
 void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t)
 {
@@ -142,7 +211,30 @@ void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *ke
         scanf("%d", &rank1);
     }
 
+    /// need to fix castle for player move and enpassant
     int to_square = (8 - rank1) * 8 + file1 - 'A';
+    
+    Bitboard king_board = (board->turn == white) ? board->pieces[w_king] : board->pieces[b_king];
+       
+
+    if(GET_BIT(from_square, king_board))
+    {
+    }
+
+    if(board->turn == white)
+    {
+        if(GET_BIT(from_square, king_board))
+        {
+
+        }
+        
+    }
+
+    if(board->turn == black)
+    {
+
+
+    }
 
     if(!(get_piece_move(piece, 1ULL << from_square, board->occupied[side], board->occupied[!side], tbls) & 1ULL << to_square))
     {
@@ -184,8 +276,6 @@ void player_make_move(ChessBoard *board, const LookupTable *tbls, const Keys *ke
 
     Board_hash hash = get_bord_hash(board, keys);
     insert_item(t, hash);
-
-
 }
 
 void print_move_list(const MoveList *list)
