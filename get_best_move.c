@@ -16,7 +16,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     MoveList list = init_move_list();
 
     ///generate position moves
-    generate_position_moves(board,  tbls, &list);
+    generate_position_moves(board, tbls, &list);
     sieve_moves(&list, board, tbls);
     
     /*
@@ -50,7 +50,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         insert_item(t, new_key);
 
         ///calculate new position evaluation
-        curr_eval = evaluate_position(board, tbls, t, new_key, list.count, list.moves[move_index]);
+        curr_eval = evaluate_position(board, tbls, t, new_key, list.moves[move_index]);
 
         ///change the turn
         board->turn = !board->turn;
@@ -63,7 +63,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         board->turn = !board->turn;
 
         ///if the current position is mate no more need to search
-        if(curr_eval >= CHECK_MATE_V || curr_eval <= -CHECK_MATE_V)
+        if((curr_eval >= CHECK_MATE_V && board->turn == white) || (curr_eval <= -CHECK_MATE_V && board->turn == black))
         {
             /// undo the move
             memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
@@ -80,7 +80,7 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         ///if the current position is better then the current best update
         if((board->turn == white && best_eval <= curr_eval) || (board->turn == black && best_eval >= curr_eval))
         {
-            (board->turn) ? (alpha = curr_eval) : (beta = curr_eval);
+            (board->turn == white) ? (alpha = curr_eval) : (beta = curr_eval);
             best_eval = curr_eval;
             best_move = list.moves[move_index];
         }

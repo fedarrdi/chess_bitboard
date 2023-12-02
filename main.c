@@ -14,17 +14,18 @@ int main()
 {
     HashTable t;
     create_table(&t, 100);
-    MoveList list = init_move_list();
     ChessBoard board = parse_FEN("2rr3k/p4p1p/1p1B4/8/3n2R1/5p1q/8/6K1 w");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
    
-    int depth = 6;
+    MoveList list = init_move_list();
+
+    int depth = 4;
     enum color turn = white;
 
     print_chess_board(&board);
 
-    for(int i = 0;i < 10;i++)
+    for(int i = 0;i < 4;i++)
     {
         long long eval;
         int move;

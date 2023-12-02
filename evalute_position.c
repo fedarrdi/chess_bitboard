@@ -1,7 +1,9 @@
+#include <stdio.h>
 #include "chess_types.h"
 #include "move_generation.h"
 #include "piece_movement.h"
 #include "position_hash_table.h"
+#include "init_functions.h"
 
 int opening_table[12][64] =
         {
@@ -140,22 +142,6 @@ int opening_table[12][64] =
                 }
         };
 
-int check_for_path(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_moves_count)
-{
-    return ((position_occurrences(t, hash_key) == 3) ? 0 : 1) || (!curr_legal_moves_count && !is_king_checked(board, tbls));
-}
-
-int check_for_mate(ChessBoard *board, const LookupTable *tbls, unsigned curr_legal_moves_count)
-{
-    if(!curr_legal_moves_count && is_king_checked(board, tbls))
-    {
-        printf("mate found!!!\n");
-        return CHECK_MATE_V * ( (board->turn == white) ? (-1) : (1) ); /// if white are mate then black wins
-    }
-
-    return 0;
-}
-
 int piece_weight[13] = {30, 100, 100, 200, 600, 0, -30, -100, -100, -200, -600, 0, 0};
 
 long long count_pieces(const ChessBoard *board)
@@ -175,13 +161,40 @@ long long move_positioning(const ChessBoard *board, int move)
     return opening_table[piece][square] * ((board->turn == black) ? (-1) : 1);
 }
 
-long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, unsigned curr_legal_move_count, int move)
+int check_for_mate_or_path(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key) // 0 for nothing 1 for mate 2 for path 
 {
-    int mate_factor = check_for_mate(board, tbls, curr_legal_move_count);
-    if(mate_factor)
-        return mate_factor;
 
-    int path_factor = check_for_path(board, tbls, t, hash_key, curr_legal_move_count);
-    long long score = count_pieces(board) + move_positioning(board, move);
-    return  score * path_factor;
+    Bitboard attacks = generate_all_attacks(board, tbls);
+    board->turn = !board->turn;
+
+    MoveList list = init_move_list();
+    generate_position_moves(board, tbls, &list);
+    sieve_moves(&list, board, tbls);
+   
+
+    enum piece king = (board->turn == white) ? (w_king) : (b_king);
+    Bitboard king_position = board->pieces[king];
+
+    board->turn = !board->turn;
+    
+    if(!list.count && (king_position & attacks))
+        return 1;
+
+    if((!list.count && !(king_position & attacks)) || (position_occurrences(t, hash_key) == 3))
+        return 2;
+
+    return 0;
+}
+
+long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, int move)
+{
+    int factor = check_for_mate_or_path(board, tbls, t, hash_key);    
+    
+    if(factor == 1)
+        return (board->turn == white) ? (CHECK_MATE_V * 100) : (-CHECK_MATE_V * 100);
+
+    if(factor == 2)
+        return 0;
+
+    return count_pieces(board) + move_positioning(board, move);
 }
