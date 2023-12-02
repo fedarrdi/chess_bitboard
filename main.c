@@ -14,7 +14,7 @@ int main()
 {
     HashTable t;
     create_table(&t, 100);
-    ChessBoard board = parse_FEN("2rr3k/p4p1p/1p1B4/8/3n2R1/5p1q/8/6K1 w");
+    ChessBoard board = parse_FEN("r6k/6rP/4pR2/p2pQ1p1/3P2P1/8/1qpK4/5R2 w");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
    
@@ -25,24 +25,34 @@ int main()
 
     print_chess_board(&board);
 
-    for(int i = 0;i < 4;i++)
+    for(int i = 0;i < 10;i++)
     {
         long long eval;
         int move;
+        int a = 0, b = 0;
 
         if(turn == white)
         {
             board.turn = turn;
-            min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0);
+            if(min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0) == false)
+                a = 1;
             print_move(move);
             play_move(move, &board);
+            
+            if(a)
+                return 0;
         }
         else
         {
             board.turn = turn;
-            min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0);
+            if(min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0) == false)
+                b = 1;
+            
             print_move(move);
             play_move(move, &board);
+            
+            if(b)
+                return 0;
         }
 
         print_chess_board(&board);

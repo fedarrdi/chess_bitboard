@@ -19,16 +19,8 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     generate_position_moves(board, tbls, &list);
     sieve_moves(&list, board, tbls);
     
-    /*
-        Move ordering speeds up the code by making capturing moves be seen 
-        first, therefor sooner alpha beta cuts accurr.
-     */
+    ///Move ordering speeds up the code by making capturing moves be seen first, therefor sooner alpha beta cuts accurr.
     move_ordering_by_capture(&list);
-    
-
-
-    ///current position hash key
-    Board_hash hash_key = get_bord_hash(board, keys);
 
     int best_move = -1;
     long long curr_eval, best_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
@@ -61,21 +53,9 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
         ///set to original
         board->turn = !board->turn;
-
-        ///if the current position is mate no more need to search
-        if((curr_eval >= CHECK_MATE_V && board->turn == white) || (curr_eval <= -CHECK_MATE_V && board->turn == black))
-        {
-            /// undo the move
-            memcpy(board->pieces, pieces, sizeof(pieces[1])*12);
-            memcpy(board->occupied, occupied, sizeof (occupied[1]) * 3);
-            /// removing the position if it is seen for the first time, or decresing the seen counter
-
-            remove_item(t, new_key);
-
-            best_move = list.moves[move_index];
-            best_eval = curr_eval;
-            break;
-        }
+    
+        /// maths that are closer depth are scored better
+        curr_eval -= depth;
 
         ///if the current position is better then the current best update
         if((board->turn == white && best_eval <= curr_eval) || (board->turn == black && best_eval >= curr_eval))
