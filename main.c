@@ -10,22 +10,22 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-int main()
+int main()///error unvalid moves
 {
     HashTable t;
     create_table(&t, 100);
-    ChessBoard board = parse_FEN("r6k/6rP/4pR2/p2pQ1p1/3P2P1/8/1qpK4/5R2 w");
+    ChessBoard board = parse_FEN("1k6/6KP/8/8/8/8/8/8 w");
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
    
     MoveList list = init_move_list();
+    
+    int depth = 2; 
+    long long eval;
+    int move;
 
-    int depth = 4;
-    enum color turn = white;
-
-    print_chess_board(&board);
-
-    for(int i = 0;i < 10;i++)
+    enum color turn = board.turn;
+    for(int i = 0;i < 1;i++)
     {
         long long eval;
         int move;
@@ -33,31 +33,30 @@ int main()
 
         if(turn == white)
         {
+            printf("WHITE\n");
             board.turn = turn;
             if(min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0) == false)
                 a = 1;
             print_move(move);
             play_move(move, &board);
-            
-            if(a)
-                return 0;
+            printf("EVALUATION: %lli", eval);            
         }
         else
         {
+            printf("BLACK\n");
             board.turn = turn;
             if(min_max(&board, &tbls, &keys, &t, &move, &eval, depth, 0, 0) == false)
                 b = 1;
             
             print_move(move);
             play_move(move, &board);
-            
-            if(b)
-                return 0;
+            printf("EVALUATION: %lli", eval);            
         }
 
         print_chess_board(&board);
+        if(a || b)
+            return 0;
         turn = !turn;
-    }
-
+        }
     return 0;
 }

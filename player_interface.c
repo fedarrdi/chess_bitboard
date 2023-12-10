@@ -284,4 +284,6 @@ void print_move_list(const MoveList *list)
     for(int i = 0;i < list->count;i++)
         if(list->moves[i])
             print_move(list->moves[i]);
+
+    printf("\n\n\n************************************************\n\n\n");
 }

@@ -18,32 +18,32 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     ///generate position moves
     generate_position_moves(board, tbls, &list);
     sieve_moves(&list, board, tbls);
-    
+
     ///Move ordering speeds up the code by making capturing moves be seen first, therefor sooner alpha beta cuts accurr.
     move_ordering_by_capture(&list);
 
     int best_move = -1;
-    long long curr_eval, best_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
+    long long best_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
 
     ///if the position is mate and there are no moves
     *out_eval = best_eval;
 
-    for(int move_index = 0; move_index < list.count; move_index ++)
+    for(unsigned int move_index = 0; move_index < list.count; move_index ++)
     {
         /// copy board before the move is done
         Bitboard pieces[12], occupied[3];
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list.moves[move_index], board); /// when move is made in the main function insert_item() need ti be called
+        play_move(list.moves[move_index], board);
 
         /// hash key after the played move
         Board_hash new_key = get_bord_hash(board, keys);
         insert_item(t, new_key);
 
         ///calculate new position evaluation
-        curr_eval = evaluate_position(board, tbls, t, new_key, list.moves[move_index]);
-
+        long long curr_eval = evaluate_position(board, tbls, t, new_key, list.moves[move_index]);
+        
         ///change the turn
         board->turn = !board->turn;
 
@@ -53,13 +53,13 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
         ///set to original
         board->turn = !board->turn;
-    
-        /// maths that are closer depth are scored better
-        curr_eval -= depth;
+        
 
+        curr_eval -= 100 - depth;
+   
         ///if the current position is better then the current best update
-        if((board->turn == white && best_eval <= curr_eval) || (board->turn == black && best_eval >= curr_eval))
-        {
+        if((board->turn == white && best_eval < curr_eval) || (board->turn == black && best_eval > curr_eval))
+        {   
             (board->turn == white) ? (alpha = curr_eval) : (beta = curr_eval);
             best_eval = curr_eval;
             best_move = list.moves[move_index];
@@ -84,5 +84,6 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
     *out_move = best_move;
     *out_eval = best_eval;
+    
     return true;
 }

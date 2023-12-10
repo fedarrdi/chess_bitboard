@@ -150,7 +150,6 @@ long long count_pieces(const ChessBoard *board)
     for (int i = w_pawn; i <= b_king; i++)
         for(Bitboard piece_board = board->pieces[i] ;piece_board; POP_BIT(piece_board, get_f1bit_index(piece_board)))
             res += piece_weight[i];
-
     return res;
 }
 
@@ -191,10 +190,15 @@ long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTabl
     int factor = check_for_mate_or_path(board, tbls, t, hash_key);    
     
     if(factor == 1)
-        return (board->turn == white) ? (CHECK_MATE_V * 100) : (-CHECK_MATE_V * 100);
-
+    {
+        printf("found mate\n");
+        return (board->turn == white) ? (CHECK_MATE_V * 10) : (-CHECK_MATE_V * 10);
+    }
+    
     if(factor == 2)
+    {
         return 0;
+    }
 
-    return count_pieces(board) + move_positioning(board, move);
+    return count_pieces(board);
 }
