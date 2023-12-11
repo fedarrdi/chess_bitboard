@@ -185,7 +185,7 @@ int check_for_mate_or_path(ChessBoard *board, const LookupTable *tbls, HashTable
     return 0;
 }
 
-long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, int move)
+long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTable *t, Board_hash hash_key, int move, int original_depth, int curr_depth)
 {
     int factor = check_for_mate_or_path(board, tbls, t, hash_key);    
     
@@ -199,6 +199,8 @@ long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTabl
     {
         return 0;
     }
+        
+    int depth_factor = ((board->turn == white) ? -(original_depth - curr_depth) : (original_depth - curr_depth)) * 3;
 
-    return count_pieces(board);
+    return count_pieces(board) + depth_factor;
 }

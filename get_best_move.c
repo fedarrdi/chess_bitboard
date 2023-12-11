@@ -12,7 +12,7 @@
 #include "zobrist_hashing.h"
 #include "position_hash_table.h"
 
-enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth, long long alpha, long long beta)
+enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, HashTable *t, int *out_move, long long  *out_eval, int depth, long long alpha, long long beta, int original_depth)
 {
     MoveList list = init_move_list();
 
@@ -31,37 +31,40 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
     for(unsigned int move_index = 0; move_index < list.count; move_index ++)
     {
+     
+        int curr_move = list.moves[move_index];
+
         /// copy board before the move is done
         Bitboard pieces[12], occupied[3];
         memcpy(pieces, board->pieces, sizeof(pieces[1])*12);
         memcpy(occupied, board->occupied, sizeof (occupied[1]) * 3);
 
-        play_move(list.moves[move_index], board);
+        play_move(curr_move, board);
           
         /// hash key after the played move
         Board_hash new_key = get_bord_hash(board, keys);
         insert_item(t, new_key);
 
         ///calculate new position evaluation
-        long long curr_eval = evaluate_position(board, tbls, t, new_key, list.moves[move_index]);
+        long long curr_eval = evaluate_position(board, tbls, t, new_key, curr_move, depth, original_depth);
         
         ///change the turn
         board->turn = !board->turn;
 
         /// going one depth further
         if(depth)
-            min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1, alpha, beta);
+            min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1, alpha, beta, original_depth);
         
         
         ///set to original
         board->turn = !board->turn;
         
         ///if the current position is better then the current best update
-        if((board->turn == white && best_eval <= curr_eval) || (board->turn == black && best_eval >= curr_eval))
+        if((board->turn == white && best_eval < curr_eval) || (board->turn == black && best_eval > curr_eval))
         {
             (board->turn == white) ? (alpha = curr_eval) : (beta = curr_eval);
             best_eval = curr_eval;
-            best_move = list.moves[move_index];
+            best_move = curr_move;
         }
 
         /// undo the move
