@@ -142,7 +142,35 @@ int opening_table[12][64] =
                 }
         };
 
-int piece_weight[13] = {30, 100, 100, 200, 600, 0, -30, -100, -100, -200, -600, 0, 0};
+int piece_weight[13] = {30, 100, 100, 250, 600, 0, -30, -100, -100, -250, -600, 0, 0};
+
+
+float evaluate_game_state(const ChessBoard *board)
+{
+    float res = 0, all_piece_value = 3380; /// the sum of the pieces in a starting positione
+    for(int piece = w_pawn; piece <= b_king; piece++)
+        for(Bitboard piece_board = board->pieces[piece]; piece_board; POP_BIT(piece_board, get_f1bit_index(piece_board)))
+            res += (piece_weight[piece] > 0) ? piece_weight[piece] : -piece_weight[piece];
+    
+    return res / all_piece_value;
+}
+
+int min(int a, int b) { return a < b ? a : b; }
+
+long long easy_endgame(const ChessBoard *board)
+{
+    enum piece king = (board->turn == white) ? w_king : b_king, enemy_king =  (board->turn == white) ? b_king : w_king;
+    Bitboard king_position = board->pieces[king], enemy_king_position = board->pieces[enemy_king];
+    int king_square = get_f1bit_index(king_position), enemy_king_square = get_f1bit_index(enemy_king_position);
+    int king_y = king_square / 8, king_x = king_square - 8*king_y;
+    int enemy_king_y = enemy_king_square / 8, enemy_king_x = enemy_king_square - 8*enemy_king_y;
+    int dst_btw_kings = abs(enemy_king_x - king_x) + abs(enemy_king_y - king_y);
+    int dst_enemy_king_corner_x = min(enemy_king_x, 7 - enemy_king_x);
+    int dst_enemy_king_corner_y = min(enemy_king_y, 7 - enemy_king_y);
+    int out = ((8 - dst_enemy_king_corner_x) + (8 - dst_enemy_king_corner_y) + dst_btw_kings);
+    return (float)out / evaluate_game_state;
+}
+
 
 long long count_pieces(const ChessBoard *board)
 {
@@ -202,5 +230,5 @@ long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTabl
         
     int depth_factor = ((board->turn == white) ? -(original_depth - curr_depth) : (original_depth - curr_depth)) * 3;
 
-    return count_pieces(board) + depth_factor;
+    return count_pieces(board) + depth_factor + move_positioning(board, move);
 }
