@@ -17,7 +17,7 @@ int main()
     HashTable t;
     create_table(&t, 100);
 
-    ChessBoard board = parse_FEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
+    ChessBoard board = parse_FEN("1k1r2n1/pPpnqpp1/4p2r/3pN2p/3P4/2PBP1P1/3N1PP1/1R2K2R w K");
     
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
@@ -26,29 +26,17 @@ int main()
     
     print_chess_board(&board);
     
-    for(float i = 100;i <= 3280; i+=100)
-    {
-        float f = i / 3280;
-        printf("%f\n", f);
-        long long v = (float)easy_endgame(&board) / f;
-        printf("%lli\n", v);
-    }
-
-    return 0;
     int depth = 4;
     enum color turn = board.turn;
-    for(int i = 0;i < 40;i++)
+    for(int i = 0;i < 1;i++)
     {
         long long eval;
         int move;
         board.turn == white ? printf("WHITE\n") : printf("BLACK\n");
         
-        if(!min_max(&board, &tbls, &keys, &t, &move, &eval, depth, LLONG_MIN, LLONG_MAX, depth))
-        {
-                (eval < 0) ? printf("BLACK WINS\n") : printf("WHITE WINS\n");    
-                return 0;
-        }
-            
+        min_max(&board, &tbls, &keys, &t, &move, &eval, depth, LLONG_MIN, LLONG_MAX, depth);
+        
+        printf("===============================================================================\n");
         print_move(move);
         play_move(move, &board);
         printf("EVALUATION: %lli", eval);            

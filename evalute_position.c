@@ -168,7 +168,7 @@ long long easy_endgame(const ChessBoard *board)
     int dst_enemy_king_corner_x = min(enemy_king_x, 7 - enemy_king_x);
     int dst_enemy_king_corner_y = min(enemy_king_y, 7 - enemy_king_y);
     int out = ((8 - dst_enemy_king_corner_x) + (8 - dst_enemy_king_corner_y) + dst_btw_kings);
-    return (float)out / evaluate_game_state;
+    return (float)out / evaluate_game_state(board);
 }
 
 
@@ -230,5 +230,5 @@ long long evaluate_position(ChessBoard *board, const LookupTable *tbls, HashTabl
         
     int depth_factor = ((board->turn == white) ? -(original_depth - curr_depth) : (original_depth - curr_depth)) * 3;
 
-    return count_pieces(board) + depth_factor + move_positioning(board, move);
+    return count_pieces(board) + depth_factor + move_positioning(board, move); + easy_endgame(board);
 }
