@@ -17,8 +17,9 @@ int main()
     HashTable t;
     create_table(&t, 100);
 
-    ChessBoard board = parse_FEN("1k1r2n1/pPpnqpp1/4p2r/3pN2p/3P4/2PBP1P1/3N1PP1/1R2K2R w K");
-    
+    //ChessBoard board = parse_FEN("1k1r2n1/pPpnqpp1/4p2r/3pN2p/3P4/2PBP1P1/3N1PP1/1R2K2R w K");
+    ChessBoard board = parse_FEN("QK6/8/8/8/8/5k2/8/8 w");
+
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
    

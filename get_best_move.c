@@ -29,9 +29,9 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
     ///if the position is mate and there are no moves
     *out_eval = best_eval;
 
-    if(depth == 4)
+    /*if(depth == 4)
         print_move_list(&list);
-
+        */
 
     for(unsigned int move_index = 0; move_index < list.count; move_index ++)
     {
@@ -51,11 +51,11 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
         ///calculate new position evaluation
         long long curr_eval = evaluate_position(board, tbls, t, new_key, curr_move, depth, original_depth);
-        if(depth == 4 && curr_move == 13374620)
+        /*if(depth == 4 && curr_move == 13374620)
         {
             printf("curr_eval: %lli \n", curr_eval);
             print_move(curr_move);
-        }
+        }*/
         ///change the turn
         board->turn = !board->turn;
 
@@ -63,9 +63,9 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         if(depth)
             min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1, alpha, beta, original_depth);
  
-        if(depth == 4 && curr_move == 13374620)
+        /*if(depth == 4 && curr_move == 13374620)
             printf("after curr_eval: %lli \n", curr_eval);
-
+        */
 
         ///set to original
         board->turn = !board->turn;
