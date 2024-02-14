@@ -4,12 +4,21 @@
 
 Bitboard get_random_64bit_number()
 {
-    // Assuming RAND_MAX is 2^31.
-    Bitboard r = rand();
-    r = r << 30 | rand();
-    r = r << 30 | rand();
-    return r;
+    Bitboard random_number = ((uint64_t)rand() << 32) | rand();
+    return random_number;
 }
+
+int main() {
+    // Инициализация на генератора на случайни числа
+    srand(time(NULL));
+    
+    // Генериране на произволно 64-битово число и извеждане на екрана
+    uint64_t random_number = generate_64_bit_number();
+    printf("Random 64-bit number: %llu\n", random_number);
+    
+    return 0;
+}
+
 
 Keys init_random_keys()
 {
