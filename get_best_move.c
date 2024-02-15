@@ -22,12 +22,13 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
     ///Move ordering speeds up the code by making capturing moves be seen first, therefor sooner alpha beta cuts accurr.
     move_ordering_by_capture(&list);
-    
+
     int best_move = -1;
-    long long best_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
+    long long best_eval = (board->turn == white) ? -CHECK_MATE_V-1 : CHECK_MATE_V+1;
     
     ///if the position is mate and there are no moves
     *out_eval = best_eval;
+
 
     for(unsigned int move_index = 0; move_index < list.count; move_index ++)
     {
@@ -47,14 +48,12 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
 
         ///calculate new position evaluation
         long long curr_eval = evaluate_position(board, tbls, t, new_key, curr_move, depth, original_depth);
-     
         ///change the turn
         board->turn = !board->turn;
 
         /// going one depth further
         if(depth)
             min_max(board, tbls, keys, t, out_move, &curr_eval, depth - 1, alpha, beta, original_depth);
- 
 
         ///set to original
         board->turn = !board->turn;
@@ -81,8 +80,10 @@ enum bool min_max(ChessBoard *board, const LookupTable *tbls, const Keys *keys, 
         }
     }
 
-    if(best_move == -1)
-        return false;
+    if(best_move == -1) {
+		*out_eval = (board->turn == white) ? -CHECK_MATE_V : CHECK_MATE_V;
+		return false;
+	}
     
     *out_move = best_move;
     *out_eval = best_eval;

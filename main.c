@@ -15,11 +15,10 @@
 int main()
 {
     HashTable t;
-    create_table(&t, 100);
+    create_table(&t, 10000);
 
-    //ChessBoard board = parse_FEN("1k1r2n1/pPpnqpp1/4p2r/3pN2p/3P4/2PBP1P1/3N1PP1/1R2K2R w K");
-    ChessBoard board = parse_FEN("QK6/8/8/8/8/5k2/8/8 w");
-
+	ChessBoard board = parse_FEN("2k5/4P3/8/8/4K3/8/8/8 w - - 0 1");
+    
     LookupTable tbls = fill_lookup_table();
     Keys keys = init_random_keys();
    
@@ -29,18 +28,22 @@ int main()
     
     int depth = 4;
     enum color turn = board.turn;
-    for(int i = 0;i < 1;i++)
+    for(int i = 0;i < 10;i++)
     {
         long long eval;
         int move;
         board.turn == white ? printf("WHITE\n") : printf("BLACK\n");
+		printf("%d\n", board.turn);
         
-        min_max(&board, &tbls, &keys, &t, &move, &eval, depth, LLONG_MIN, LLONG_MAX, depth);
+		if (!min_max(&board, &tbls, &keys, &t, &move, &eval, depth, LLONG_MIN, LLONG_MAX, depth)) {
+			printf("Could not find best move, terminating.\n");
+			break;
+		}
         
-        printf("===============================================================================\n");
         print_move(move);
         play_move(move, &board);
-        printf("EVALUATION: %lli", eval);            
+        /* printf("EVALUATION: %lli", eval); */            
+        printf("===============================================================================\n");
 
         print_chess_board(&board);
         board.turn  = !board.turn;
